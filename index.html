@@ -1,35 +1,13 @@
-﻿<html><head>
-<link rel="icon" data-savepage-href="https://rb.djul.se/favicon.ico" href=""><link rel="stylesheet" href="resource://content-accessible/plaintext.css"><link href="data:text/css,%3Ais(%5Bid*%3D'google_ads_iframe'%5D%2C%5Bid*%3D'taboola-'%5D%2C.taboolaHeight%2C.taboola-placeholder%2C%23top-ad%2C%23credential_picker_container%2C%23credentials-picker-container%2C%23credential_picker_iframe%2C%5Bid*%3D'google-one-tap-iframe'%5D%2C%23google-one-tap-popup-container%2C.google-one-tap__module%2C.google-one-tap-modal-div%2C%23amp_floatingAdDiv%2C%23ez-content-blocker-container)%20%7Bdisplay%3Anone!important%3Bmin-height%3A0!important%3Bheight%3A0!important%3B%7D" rel="stylesheet" type="text/css">
-<style id="savepage-cssvariables">
-  :root {
+﻿<html><head><link rel="stylesheet" href="resource://content-accessible/plaintext.css"><link href="data:text/css,%3Ais(%5Bid*%3D'google_ads_iframe'%5D%2C%5Bid*%3D'taboola-'%5D%2C.taboolaHeight%2C.taboola-placeholder%2C%23top-ad%2C%23credential_picker_container%2C%23credentials-picker-container%2C%23credential_picker_iframe%2C%5Bid*%3D'google-one-tap-iframe'%5D%2C%23google-one-tap-popup-container%2C.google-one-tap__module%2C.google-one-tap-modal-div%2C%23amp_floatingAdDiv%2C%23ez-content-blocker-container)%20%7Bdisplay%3Anone!important%3Bmin-height%3A0!important%3Bheight%3A0!important%3B%7D" rel="stylesheet" type="text/css"></head><body cz-shortcut-listen="true"><pre>/* VM configuration file */
+  {
+      version: 1,
+      machine: "riscv64",
+      memory_size: 128,
+      bios: "bbl64.bin",
+      kernel: "kernel-riscv64.bin",
+      cmdline: "console=hvc0 root=/dev/vda rw init=/bin/su - djul",
+      /* drive0: { file: "root-riscv64.ext2" }, whole filesystem, not used rn */
+      drive0: { file: "root-riscv64/blk.txt" }, /* chunked filesystem for performance */
+      eth0: { driver: "user" },
   }
-</style>
-<script id="savepage-shadowloader" type="text/javascript">
-  "use strict";
-  window.addEventListener("DOMContentLoaded",
-  function(event) {
-    savepage_ShadowLoader(5);
-  },false);
-  function savepage_ShadowLoader(c){createShadowDOMs(0,document.documentElement);function createShadowDOMs(a,b){var i;if(b.localName=="iframe"||b.localName=="frame"){if(a<c){try{if(b.contentDocument.documentElement!=null){createShadowDOMs(a+1,b.contentDocument.documentElement)}}catch(e){}}}else{if(b.children.length>=1&&b.children[0].localName=="template"&&b.children[0].hasAttribute("data-savepage-shadowroot")){b.attachShadow({mode:"open"}).appendChild(b.children[0].content);b.removeChild(b.children[0]);for(i=0;i<b.shadowRoot.children.length;i++)if(b.shadowRoot.children[i]!=null)createShadowDOMs(a,b.shadowRoot.children[i])}for(i=0;i<b.children.length;i++)if(b.children[i]!=null)createShadowDOMs(a,b.children[i])}}}
-</script>
-<meta name="savepage-url" content="https://rb.djul.se/root-riscv64.cfg">
-<meta name="savepage-title" content="">
-<meta name="savepage-pubdate" content="Unknown">
-<meta name="savepage-from" content="https://rb.djul.se/root-riscv64.cfg">
-<meta name="savepage-date" content="Wed Dec 18 2024 11:27:37 GMT+0100 (Central European Standard Time)">
-<meta name="savepage-state" content="Standard Items; Retain cross-origin frames; Merge CSS images; Remove unsaved URLs; Load lazy images in existing content; Max frame depth = 5; Max resource size = 50MB; Max resource time = 10s;">
-<meta name="savepage-version" content="28.11">
-<meta name="savepage-comments" content="">
-  </head><body cz-shortcut-listen="true"><pre>/* VM configuration file */
-{
-    version: 1,
-    machine: "riscv64",
-    memory_size: 128,
-    bios: "bbl64.bin",
-    kernel: "kernel-riscv64.bin",
-    cmdline: "console=hvc0 root=/dev/vda rw init=/bin/su - djul",
-    /* drive0: { file: "root-riscv64.ext2" }, whole filesystem, not used rn */
-    drive0: { file: "root-riscv64/blk.txt" }, /* chunked filesystem for performance */
-    eth0: { driver: "user" },
-}
-</pre></body></html>
+  </pre></body></html>
