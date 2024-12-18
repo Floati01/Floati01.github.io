@@ -1,15 +1,21 @@
-﻿<!doctype html>
-
-<html><head><link rel="stylesheet" href="resource://content-accessible/plaintext.css"><link href="data:text/css,%3Ais(%5Bid*%3D'google_ads_iframe'%5D%2C%5Bid*%3D'taboola-'%5D%2C.taboolaHeight%2C.taboola-placeholder%2C%23top-ad%2C%23credential_picker_container%2C%23credentials-picker-container%2C%23credential_picker_iframe%2C%5Bid*%3D'google-one-tap-iframe'%5D%2C%23google-one-tap-popup-container%2C.google-one-tap__module%2C.google-one-tap-modal-div%2C%23amp_floatingAdDiv%2C%23ez-content-blocker-container)%20%7Bdisplay%3Anone!important%3Bmin-height%3A0!important%3Bheight%3A0!important%3B%7D" rel="stylesheet" type="text/css"></head><body cz-shortcut-listen="true"><pre>/* VM configuration file */
-  {
-      version: 1,
-      machine: "riscv64",
-      memory_size: 128,
-      bios: "bbl64.bin",
-      kernel: "kernel-riscv64.bin",
-      cmdline: "console=hvc0 root=/dev/vda rw init=/bin/su - djul",
-      /* drive0: { file: "root-riscv64.ext2" }, whole filesystem, not used rn */
-      drive0: { file: "root-riscv64/blk.txt" }, /* chunked filesystem for performance */
-      eth0: { driver: "user" },
-  }
-  </pre></body></html>
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+<body>
+/* VM configuration file */
+{
+    version: 1,
+    machine: "riscv64",
+    memory_size: 128,
+    bios: "bbl64.bin",
+    kernel: "kernel-riscv64.bin",
+    cmdline: "console=hvc0 root=/dev/vda rw init=/bin/su - djul",
+    /* drive0: { file: "root-riscv64.ext2" }, whole filesystem, not used rn */
+    drive0: { file: "root-riscv64/blk.txt" }, /* chunked filesystem for performance */
+    eth0: { driver: "user" },
+}
+</body>
+</html>
