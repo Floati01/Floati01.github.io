@@ -85,7 +85,16 @@ async function getAccessToken(env) {
 async function spotifyRequest(env, pathOrUrl) {
   const token = await getAccessToken(env);
   const isAbsolute = pathOrUrl.startsWith('https://');
-  const url = isAbsolute ? pathOrUrl : `https://api.spotify.com/v1${pathOrUrl}`;
+  const rawUrl = isAbsolute ? pathOrUrl : `https://api.spotify.com/v1${pathOrUrl}`;
+  const parsed = new URL(rawUrl);
+
+  // Spotify can reject specific limit/market combinations for some token types.
+  parsed.searchParams.delete('limit');
+  if (parsed.searchParams.get('market') === 'from_token') {
+    parsed.searchParams.delete('market');
+  }
+
+  const url = parsed.toString();
 
   const response = await fetch(url, {
     headers: {

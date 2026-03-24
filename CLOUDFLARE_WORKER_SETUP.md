@@ -69,6 +69,7 @@ In `main.js`, set this value near the top:
 - `Origin not allowed`: check `ALLOWED_ORIGINS` includes your site origin and/or `localhost`.
 - `Missing SPOTIFY_CLIENT_ID or SPOTIFY_CLIENT_SECRET`: set Worker secrets.
 - `Proxy error 500`: check Worker logs for Spotify error details.
+- If errors show old query params like `market=from_token` or `limit=20`, redeploy the Worker and hard refresh browser (Ctrl+F5) to avoid stale script/worker versions.
 
 ## Notes
 
