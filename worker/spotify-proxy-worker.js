@@ -1,6 +1,22 @@
 let cachedToken = null;
 let tokenExpiresAt = 0;
-const WORKER_VERSION = '2026-03-24-v2';
+const WORKER_VERSION = '2026-03-24-v3';
+
+function sleep(ms) {
+  return new Promise((resolve) => setTimeout(resolve, ms));
+}
+
+function getRetryDelayMs(response, attempt) {
+  const retryAfter = response.headers.get('Retry-After');
+  const retryAfterSeconds = Number.parseInt(retryAfter || '', 10);
+
+  if (Number.isInteger(retryAfterSeconds) && retryAfterSeconds > 0) {
+    return retryAfterSeconds * 1000;
+  }
+
+  // Exponential backoff with a safe ceiling.
+  return Math.min(8000, 500 * 2 ** attempt);
+}
 
 function parseAllowedOrigins(env) {
   const raw = env.ALLOWED_ORIGINS || env.ALLOWED_ORIGIN || '*';
@@ -101,18 +117,30 @@ async function spotifyRequest(env, pathOrUrl) {
 
   const url = parsed.toString();
 
-  const response = await fetch(url, {
-    headers: {
-      Authorization: `Bearer ${token}`
-    }
-  });
+  const maxAttempts = 4;
 
-  if (!response.ok) {
+  for (let attempt = 0; attempt < maxAttempts; attempt += 1) {
+    const response = await fetch(url, {
+      headers: {
+        Authorization: `Bearer ${token}`
+      }
+    });
+
+    if (response.ok) {
+      return response.json();
+    }
+
+    if (response.status === 429 && attempt < maxAttempts - 1) {
+      const delayMs = getRetryDelayMs(response, attempt);
+      await sleep(delayMs);
+      continue;
+    }
+
     const details = await response.text();
     throw new Error(`Spotify request failed (${response.status}) for ${url}: ${details}`);
   }
 
-  return response.json();
+  throw new Error(`Spotify request failed after retries for ${url}`);
 }
 
 async function getAllPages(env, initialPath) {
@@ -199,7 +227,7 @@ export default {
       if (route.type === 'artistAlbums') {
         const items = await getAllPages(
           env,
-          `/artists/${route.artistId}/albums?include_groups=album,single,appears_on,compilation`
+          `/artists/${route.artistId}/albums?include_groups=album,single`
         );
 
         return jsonResponse({ items }, 200, corsHeaders);

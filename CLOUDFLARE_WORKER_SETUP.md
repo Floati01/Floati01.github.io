@@ -43,7 +43,7 @@ Open this URL in browser:
 Expected response:
 
 - `{ "ok": true, "service": "spotify-proxy-worker" }`
-- and `"worker_version": "2026-03-24-v2"`
+- and `"worker_version": "2026-03-24-v3"`
 
 Then verify albums endpoint with a real artist id:
 
@@ -78,7 +78,7 @@ In `main.js`, set this value near the top:
 2. Replace code with latest content from `worker/spotify-proxy-worker.js`.
 3. Click Deploy.
 4. Open `https://YOUR_WORKER_SUBDOMAIN.workers.dev/api/health`.
-5. Confirm `worker_version` equals `2026-03-24-v2`.
+5. Confirm `worker_version` equals `2026-03-24-v3`.
 6. If version is older, you are viewing a different Worker or route than the one your website calls.
 
 ## Notes
