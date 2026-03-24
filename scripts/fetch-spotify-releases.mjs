@@ -48,6 +48,25 @@ function normalizeArtistId(input) {
 
 const normalizedArtistId = normalizeArtistId(artistId);
 
+function sanitizeAlbumsUrl(urlInput) {
+  const url = new URL(urlInput);
+
+  // Keep request arguments inside Spotify's accepted range and normalize malformed values.
+  const rawLimit = url.searchParams.get('limit');
+  const parsedLimit = Number.parseInt(rawLimit || '', 10);
+  const safeLimit = Number.isInteger(parsedLimit)
+    ? Math.min(50, Math.max(1, parsedLimit))
+    : 20;
+
+  url.searchParams.set('limit', String(safeLimit));
+
+  if (!url.searchParams.get('include_groups')) {
+    url.searchParams.set('include_groups', 'album,single');
+  }
+
+  return url.toString();
+}
+
 function isLikelyEp(item) {
   const name = item.name || '';
   const normalized = name.toLowerCase();
@@ -84,13 +103,15 @@ async function getAccessToken() {
 async function getAllArtistReleases(accessToken) {
   const firstUrl = new URL(`https://api.spotify.com/v1/artists/${normalizedArtistId}/albums`);
   firstUrl.searchParams.set('include_groups', 'album,single');
-  firstUrl.searchParams.set('limit', '50');
+  firstUrl.searchParams.set('limit', '20');
 
-  let nextUrl = firstUrl.toString();
+  let nextUrl = sanitizeAlbumsUrl(firstUrl.toString());
   const allItems = [];
 
   while (nextUrl) {
-    const response = await fetch(nextUrl, {
+    const requestUrl = sanitizeAlbumsUrl(nextUrl);
+
+    const response = await fetch(requestUrl, {
       headers: {
         Authorization: `Bearer ${accessToken}`
       }
@@ -98,12 +119,12 @@ async function getAllArtistReleases(accessToken) {
 
     if (!response.ok) {
       const details = await response.text();
-      throw new Error(`Albums request failed (${response.status}): ${details}`);
+      throw new Error(`Albums request failed (${response.status}) for ${requestUrl}: ${details}`);
     }
 
     const data = await response.json();
     allItems.push(...(data.items || []));
-    nextUrl = data.next;
+    nextUrl = data.next ? sanitizeAlbumsUrl(data.next) : null;
   }
 
   return allItems;
