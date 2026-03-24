@@ -185,14 +185,14 @@ export default {
       if (route.type === 'artistAlbums') {
         const items = await getAllPages(
           env,
-          `/artists/${route.artistId}/albums?include_groups=album,single,appears_on,compilation&market=from_token&limit=20`
+          `/artists/${route.artistId}/albums?include_groups=album,single,appears_on,compilation`
         );
 
         return jsonResponse({ items }, 200, corsHeaders);
       }
 
       if (route.type === 'albumTracks') {
-        const items = await getAllPages(env, `/albums/${route.albumId}/tracks?market=from_token&limit=50`);
+        const items = await getAllPages(env, `/albums/${route.albumId}/tracks`);
         return jsonResponse({ items }, 200, corsHeaders);
       }
 

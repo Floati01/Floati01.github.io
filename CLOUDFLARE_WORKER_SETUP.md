@@ -44,6 +44,14 @@ Expected response:
 
 - `{ "ok": true, "service": "spotify-proxy-worker" }`
 
+Then verify albums endpoint with a real artist id:
+
+- `https://YOUR_WORKER_SUBDOMAIN.workers.dev/api/artist/0qc4BFxcwRFZfevTck4fOi/albums`
+
+Expected response includes:
+
+- `{ "items": [ ... ] }`
+
 ## 4. Connect frontend to Worker
 
 In `main.js`, set this value near the top:
