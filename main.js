@@ -243,6 +243,28 @@ async function getAlbumTracks(albumId) {
   return tracks;
 }
 
+function createFeatureArtistListButton(featureArtist) {
+  const button = document.createElement('button');
+  button.type = 'button';
+  button.className = 'artist-choice';
+  button.innerHTML = `${featureArtist.name}<small>${featureArtist.appearances} feature appearances</small>`;
+
+  button.addEventListener('click', async () => {
+    try {
+      setStatus(`Loading featured artists for ${featureArtist.name}...`);
+      state.currentArtist = { id: featureArtist.id, name: featureArtist.name };
+      appendPathStep(state.currentArtist);
+      markReachedTargetIfNeeded();
+      await showDiscographyForCurrentArtist();
+      setStatus('Loaded featured artists. Click another artist to continue the journey.');
+    } catch (error) {
+      setStatus(error.message || 'Failed to load featured artists.', 'error');
+    }
+  });
+
+  return button;
+}
+
 function markReachedTargetIfNeeded() {
   if (!state.currentArtist || !state.endArtist) {
     return;
@@ -260,10 +282,10 @@ async function showDiscographyForCurrentArtist() {
     return;
   }
 
-  elements.currentArtistLabel.textContent = `${state.currentArtist.name} discography`;
+  elements.currentArtistLabel.textContent = `${state.currentArtist.name} featured artists across discography`;
   clearNode(elements.albumsList);
   clearNode(elements.tracksList);
-  elements.albumLabel.textContent = 'Select an album to inspect tracks.';
+  elements.albumLabel.textContent = 'Summary';
 
   const albums = await getArtistAlbums(state.currentArtist.id);
 
@@ -271,77 +293,65 @@ async function showDiscographyForCurrentArtist() {
     const li = document.createElement('li');
     li.innerHTML = '<p class="empty">No releases returned for this artist.</p>';
     elements.albumsList.appendChild(li);
+    const info = document.createElement('li');
+    info.innerHTML = '<p class="empty">No summary available.</p>';
+    elements.tracksList.appendChild(info);
     return;
   }
 
-  albums.forEach((album) => {
-    const li = document.createElement('li');
-    const btn = document.createElement('button');
-    btn.type = 'button';
-    btn.className = 'secondary';
-    btn.textContent = `${album.name} (${album.release_date || 'unknown'}) - ${album.album_type}`;
-    btn.style.width = '100%';
-    btn.style.textAlign = 'left';
-    btn.addEventListener('click', () => showAlbumTracks(album));
-    li.appendChild(btn);
-    elements.albumsList.appendChild(li);
-  });
-}
+  const featureMap = new Map();
 
-function createFeatureButton(featureArtist) {
-  const btn = document.createElement('button');
-  btn.type = 'button';
-  btn.className = 'feature-btn';
-  btn.textContent = featureArtist.name;
-  btn.addEventListener('click', async () => {
-    state.currentArtist = { id: featureArtist.id, name: featureArtist.name };
-    appendPathStep(state.currentArtist);
-    markReachedTargetIfNeeded();
-    await showDiscographyForCurrentArtist();
-  });
-  return btn;
-}
-
-async function showAlbumTracks(album) {
-  elements.albumLabel.textContent = `Tracks on ${album.name}`;
-  clearNode(elements.tracksList);
-
-  try {
+  for (const album of albums) {
     const tracks = await getAlbumTracks(album.id);
 
-    if (!tracks.length) {
-      const li = document.createElement('li');
-      li.innerHTML = '<p class="empty">No tracks returned for this release.</p>';
-      elements.tracksList.appendChild(li);
-      return;
-    }
+    for (const track of tracks) {
+      for (const artist of track.artists || []) {
+        if (!artist?.id || artist.id === state.currentArtist.id) {
+          continue;
+        }
 
-    tracks.forEach((track) => {
-      const li = document.createElement('li');
+        if (!featureMap.has(artist.id)) {
+          featureMap.set(artist.id, {
+            id: artist.id,
+            name: artist.name,
+            appearances: 0
+          });
+        }
 
-      const title = document.createElement('span');
-      title.className = 'track-title';
-      title.textContent = track.name;
-      li.appendChild(title);
-
-      const featureArtists = (track.artists || []).filter((artist) => artist.id !== state.currentArtist.id);
-
-      if (!featureArtists.length) {
-        const plain = document.createElement('span');
-        plain.className = 'muted';
-        plain.textContent = 'No featured artists';
-        li.appendChild(plain);
-      } else {
-        featureArtists.forEach((artist) => {
-          li.appendChild(createFeatureButton({ id: artist.id, name: artist.name }));
-        });
+        featureMap.get(artist.id).appearances += 1;
       }
-
-      elements.tracksList.appendChild(li);
-    });
-  } catch (error) {
-    setStatus(error.message, 'error');
+    }
   }
+
+  const featuredArtists = Array.from(featureMap.values()).sort((a, b) => {
+    if (b.appearances !== a.appearances) {
+      return b.appearances - a.appearances;
+    }
+    return a.name.localeCompare(b.name);
+  });
+
+  if (!featuredArtists.length) {
+    const li = document.createElement('li');
+    li.innerHTML = '<p class="empty">No featured artists found across this discography.</p>';
+    elements.albumsList.appendChild(li);
+  } else {
+    featuredArtists.forEach((artist) => {
+      const li = document.createElement('li');
+      li.appendChild(createFeatureArtistListButton(artist));
+      elements.albumsList.appendChild(li);
+    });
+  }
+
+  const summaryItems = [
+    `Releases scanned: ${albums.length}`,
+    `Unique featured artists: ${featuredArtists.length}`
+  ];
+
+  summaryItems.forEach((text) => {
+    const li = document.createElement('li');
+    li.textContent = text;
+    elements.tracksList.appendChild(li);
+  });
 }
 
 async function startJourney() {
@@ -357,7 +367,7 @@ async function startJourney() {
     renderPath();
     markReachedTargetIfNeeded();
     await showDiscographyForCurrentArtist();
-    setStatus('Journey started. Open albums, then click featured artists to move through the graph.');
+    setStatus('Journey started. Click a featured artist to continue through the graph.');
   } catch (error) {
     setStatus(error.message || 'Failed to load discography.', 'error');
   }
@@ -378,7 +388,7 @@ function resetAll() {
   clearNode(elements.albumsList);
   clearNode(elements.tracksList);
   elements.currentArtistLabel.textContent = 'Select start and end artists, then click Start Journey.';
-  elements.albumLabel.textContent = 'Select an album to inspect tracks.';
+  elements.albumLabel.textContent = 'Summary';
   elements.status.textContent = '';
   elements.journeyState.textContent = '';
   renderSelectionSummary();

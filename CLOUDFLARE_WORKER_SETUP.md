@@ -43,6 +43,7 @@ Open this URL in browser:
 Expected response:
 
 - `{ "ok": true, "service": "spotify-proxy-worker" }`
+- and `"worker_version": "2026-03-24-v2"`
 
 Then verify albums endpoint with a real artist id:
 
@@ -70,6 +71,15 @@ In `main.js`, set this value near the top:
 - `Missing SPOTIFY_CLIENT_ID or SPOTIFY_CLIENT_SECRET`: set Worker secrets.
 - `Proxy error 500`: check Worker logs for Spotify error details.
 - If errors show old query params like `market=from_token` or `limit=20`, redeploy the Worker and hard refresh browser (Ctrl+F5) to avoid stale script/worker versions.
+
+### Force latest Worker version
+
+1. Open Worker editor.
+2. Replace code with latest content from `worker/spotify-proxy-worker.js`.
+3. Click Deploy.
+4. Open `https://YOUR_WORKER_SUBDOMAIN.workers.dev/api/health`.
+5. Confirm `worker_version` equals `2026-03-24-v2`.
+6. If version is older, you are viewing a different Worker or route than the one your website calls.
 
 ## Notes
 

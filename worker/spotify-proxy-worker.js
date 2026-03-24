@@ -1,5 +1,6 @@
 let cachedToken = null;
 let tokenExpiresAt = 0;
+const WORKER_VERSION = '2026-03-24-v2';
 
 function parseAllowedOrigins(env) {
   const raw = env.ALLOWED_ORIGINS || env.ALLOWED_ORIGIN || '*';
@@ -48,9 +49,13 @@ function getCorsHeaders(origin, isAllowed) {
 }
 
 function jsonResponse(body, status, corsHeaders) {
-  return new Response(JSON.stringify(body, null, 2), {
+  return new Response(JSON.stringify({ ...body, worker_version: WORKER_VERSION }, null, 2), {
     status,
-    headers: corsHeaders
+    headers: {
+      ...corsHeaders,
+      'X-Worker-Version': WORKER_VERSION,
+      'Cache-Control': 'no-store'
+    }
   });
 }
 
