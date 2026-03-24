@@ -9,24 +9,53 @@ const state = {
   tracksCache: new Map()
 };
 
-const elements = {
-  startQuery: document.getElementById('start-artist-query'),
-  endQuery: document.getElementById('end-artist-query'),
-  searchStartBtn: document.getElementById('search-start-btn'),
-  searchEndBtn: document.getElementById('search-end-btn'),
-  startJourneyBtn: document.getElementById('start-journey-btn'),
-  resetBtn: document.getElementById('reset-btn'),
-  status: document.getElementById('status'),
-  journeyState: document.getElementById('journey-state'),
-  selectionSummary: document.getElementById('selection-summary'),
-  path: document.getElementById('path'),
-  startResults: document.getElementById('start-search-results'),
-  endResults: document.getElementById('end-search-results'),
-  currentArtistLabel: document.getElementById('current-artist-label'),
-  albumLabel: document.getElementById('album-label'),
-  albumsList: document.getElementById('albums-list'),
-  tracksList: document.getElementById('tracks-list')
-};
+let elements = null;
+
+function getRequiredElements() {
+  const ids = {
+    startQuery: 'start-artist-query',
+    endQuery: 'end-artist-query',
+    searchStartBtn: 'search-start-btn',
+    searchEndBtn: 'search-end-btn',
+    startJourneyBtn: 'start-journey-btn',
+    resetBtn: 'reset-btn',
+    status: 'status',
+    journeyState: 'journey-state',
+    selectionSummary: 'selection-summary',
+    path: 'path',
+    startResults: 'start-search-results',
+    endResults: 'end-search-results',
+    currentArtistLabel: 'current-artist-label',
+    albumLabel: 'album-label',
+    albumsList: 'albums-list',
+    tracksList: 'tracks-list'
+  };
+
+  const mapped = {};
+
+  for (const [key, id] of Object.entries(ids)) {
+    const node = document.getElementById(id);
+    if (!node) {
+      throw new Error(`Missing required page element: #${id}`);
+    }
+    mapped[key] = node;
+  }
+
+  return mapped;
+}
+
+function showGlobalError(message) {
+  const host = document.body || document.documentElement;
+  const box = document.createElement('div');
+  box.style.margin = '12px';
+  box.style.padding = '10px';
+  box.style.border = '1px solid #8f2d19';
+  box.style.background = '#fff0ed';
+  box.style.color = '#8f2d19';
+  box.style.fontFamily = 'sans-serif';
+  box.textContent = message;
+  host.prepend(box);
+}
 
 function setStatus(message, type = 'ok') {
   elements.status.textContent = message;
@@ -355,22 +384,45 @@ function resetAll() {
   renderPath();
 }
 
-elements.searchStartBtn.addEventListener('click', () => handleSearch('start'));
-elements.searchEndBtn.addEventListener('click', () => handleSearch('end'));
-elements.startJourneyBtn.addEventListener('click', startJourney);
-elements.resetBtn.addEventListener('click', resetAll);
+function initApp() {
+  elements = getRequiredElements();
 
-elements.startQuery.addEventListener('keydown', (event) => {
-  if (event.key === 'Enter') {
-    handleSearch('start');
+  elements.searchStartBtn.addEventListener('click', () => handleSearch('start'));
+  elements.searchEndBtn.addEventListener('click', () => handleSearch('end'));
+  elements.startJourneyBtn.addEventListener('click', startJourney);
+  elements.resetBtn.addEventListener('click', resetAll);
+
+  elements.startQuery.addEventListener('keydown', (event) => {
+    if (event.key === 'Enter') {
+      handleSearch('start');
+    }
+  });
+
+  elements.endQuery.addEventListener('keydown', (event) => {
+    if (event.key === 'Enter') {
+      handleSearch('end');
+    }
+  });
+
+  renderSelectionSummary();
+  renderPath();
+  setStatus('Ready. Search for start and end artists.');
+}
+
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', () => {
+    try {
+      initApp();
+    } catch (error) {
+      showGlobalError(`App failed to initialize: ${error.message}`);
+      console.error(error);
+    }
+  });
+} else {
+  try {
+    initApp();
+  } catch (error) {
+    showGlobalError(`App failed to initialize: ${error.message}`);
+    console.error(error);
   }
-});
-
-elements.endQuery.addEventListener('keydown', (event) => {
-  if (event.key === 'Enter') {
-    handleSearch('end');
-  }
-});
-
-renderSelectionSummary();
-renderPath();
+}

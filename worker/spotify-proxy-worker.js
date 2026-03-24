@@ -1,9 +1,43 @@
 let cachedToken = null;
 let tokenExpiresAt = 0;
 
-function getCorsHeaders(origin, allowedOrigin) {
-  const allowOrigin = allowedOrigin || '*';
-  const corsOrigin = allowOrigin === '*' ? '*' : origin;
+function parseAllowedOrigins(env) {
+  const raw = env.ALLOWED_ORIGINS || env.ALLOWED_ORIGIN || '*';
+
+  return String(raw)
+    .split(',')
+    .map((value) => value.trim())
+    .filter(Boolean);
+}
+
+function isLocalhostOrigin(origin) {
+  return /^https?:\/\/(localhost|127\.0\.0\.1)(:\d+)?$/i.test(origin);
+}
+
+function isOriginAllowed(origin, allowlist) {
+  if (!origin) {
+    return false;
+  }
+
+  if (allowlist.includes('*')) {
+    return true;
+  }
+
+  for (const allowed of allowlist) {
+    if (allowed === origin) {
+      return true;
+    }
+
+    if (allowed === 'localhost' && isLocalhostOrigin(origin)) {
+      return true;
+    }
+  }
+
+  return false;
+}
+
+function getCorsHeaders(origin, isAllowed) {
+  const corsOrigin = isAllowed ? origin : 'null';
 
   return {
     'Access-Control-Allow-Origin': corsOrigin,
@@ -106,14 +140,18 @@ export default {
   async fetch(request, env) {
     const requestUrl = new URL(request.url);
     const requestOrigin = request.headers.get('Origin') || '';
-    const allowedOrigin = env.ALLOWED_ORIGIN || '*';
-    const corsHeaders = getCorsHeaders(requestOrigin, allowedOrigin);
+    const allowlist = parseAllowedOrigins(env);
+    const allowed = isOriginAllowed(requestOrigin, allowlist);
+    const corsHeaders = getCorsHeaders(requestOrigin, allowed);
 
     if (request.method === 'OPTIONS') {
+      if (!allowed) {
+        return jsonResponse({ error: 'Origin not allowed' }, 403, corsHeaders);
+      }
       return new Response(null, { status: 204, headers: corsHeaders });
     }
 
-    if (allowedOrigin !== '*' && requestOrigin && requestOrigin !== allowedOrigin) {
+    if (!allowed) {
       return jsonResponse({ error: 'Origin not allowed' }, 403, corsHeaders);
     }
 
