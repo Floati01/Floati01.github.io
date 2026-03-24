@@ -51,20 +51,54 @@ const normalizedArtistId = normalizeArtistId(artistId);
 function sanitizeAlbumsUrl(urlInput) {
   const url = new URL(urlInput);
 
-  // Keep request arguments inside Spotify's accepted range and normalize malformed values.
-  const rawLimit = url.searchParams.get('limit');
-  const parsedLimit = Number.parseInt(rawLimit || '', 10);
-  const safeLimit = Number.isInteger(parsedLimit)
-    ? Math.min(50, Math.max(1, parsedLimit))
-    : 20;
-
-  url.searchParams.set('limit', String(safeLimit));
+  // Some Spotify responses report "Invalid limit" despite valid numeric values.
+  // Use endpoint defaults by removing limit entirely on every request.
+  url.searchParams.delete('limit');
 
   if (!url.searchParams.get('include_groups')) {
     url.searchParams.set('include_groups', 'album,single');
   }
 
   return url.toString();
+}
+
+async function fetchAlbumsPage(urlInput, accessToken) {
+  const requestUrl = sanitizeAlbumsUrl(urlInput);
+
+  let response = await fetch(requestUrl, {
+    headers: {
+      Authorization: `Bearer ${accessToken}`
+    }
+  });
+
+  if (response.ok) {
+    return { data: await response.json(), requestUrl };
+  }
+
+  const details = await response.text();
+
+  // Defensive retry path in case Spotify still rejects with an Invalid limit message.
+  if (response.status === 400 && /invalid limit/i.test(details)) {
+    const retryUrl = new URL(requestUrl);
+    retryUrl.searchParams.delete('limit');
+
+    response = await fetch(retryUrl.toString(), {
+      headers: {
+        Authorization: `Bearer ${accessToken}`
+      }
+    });
+
+    if (response.ok) {
+      return { data: await response.json(), requestUrl: retryUrl.toString() };
+    }
+
+    const retryDetails = await response.text();
+    throw new Error(
+      `Albums request failed (${response.status}) for ${retryUrl}: ${retryDetails}`
+    );
+  }
+
+  throw new Error(`Albums request failed (${response.status}) for ${requestUrl}: ${details}`);
 }
 
 function isLikelyEp(item) {
@@ -103,26 +137,12 @@ async function getAccessToken() {
 async function getAllArtistReleases(accessToken) {
   const firstUrl = new URL(`https://api.spotify.com/v1/artists/${normalizedArtistId}/albums`);
   firstUrl.searchParams.set('include_groups', 'album,single');
-  firstUrl.searchParams.set('limit', '20');
 
   let nextUrl = sanitizeAlbumsUrl(firstUrl.toString());
   const allItems = [];
 
   while (nextUrl) {
-    const requestUrl = sanitizeAlbumsUrl(nextUrl);
-
-    const response = await fetch(requestUrl, {
-      headers: {
-        Authorization: `Bearer ${accessToken}`
-      }
-    });
-
-    if (!response.ok) {
-      const details = await response.text();
-      throw new Error(`Albums request failed (${response.status}) for ${requestUrl}: ${details}`);
-    }
-
-    const data = await response.json();
+    const { data } = await fetchAlbumsPage(nextUrl, accessToken);
     allItems.push(...(data.items || []));
     nextUrl = data.next ? sanitizeAlbumsUrl(data.next) : null;
   }
