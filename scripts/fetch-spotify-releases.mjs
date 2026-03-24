@@ -9,6 +9,45 @@ if (!clientId || !clientSecret || !artistId) {
   process.exit(1);
 }
 
+function normalizeArtistId(input) {
+  const value = String(input || '').trim();
+
+  if (!value) {
+    throw new Error('SPOTIFY_ARTIST_ID is empty');
+  }
+
+  // Accept raw id, Spotify URI (spotify:artist:<id>), or full URL.
+  const uriMatch = value.match(/^spotify:artist:([A-Za-z0-9]+)$/);
+  if (uriMatch) {
+    return uriMatch[1];
+  }
+
+  if (value.startsWith('http://') || value.startsWith('https://')) {
+    try {
+      const parsed = new URL(value);
+      const parts = parsed.pathname.split('/').filter(Boolean);
+      const artistIndex = parts.findIndex((part) => part === 'artist');
+
+      if (artistIndex >= 0 && parts[artistIndex + 1]) {
+        return parts[artistIndex + 1];
+      }
+    } catch {
+      // Fall through to raw validation below.
+    }
+  }
+
+  const rawMatch = value.match(/^([A-Za-z0-9]+)$/);
+  if (rawMatch) {
+    return rawMatch[1];
+  }
+
+  throw new Error(
+    'SPOTIFY_ARTIST_ID must be a raw id, spotify:artist:<id>, or https://open.spotify.com/artist/<id>'
+  );
+}
+
+const normalizedArtistId = normalizeArtistId(artistId);
+
 function isLikelyEp(item) {
   const name = item.name || '';
   const normalized = name.toLowerCase();
@@ -43,7 +82,11 @@ async function getAccessToken() {
 }
 
 async function getAllArtistReleases(accessToken) {
-  let nextUrl = `https://api.spotify.com/v1/artists/${artistId}/albums?include_groups=album,single&limit=50`;
+  const firstUrl = new URL(`https://api.spotify.com/v1/artists/${normalizedArtistId}/albums`);
+  firstUrl.searchParams.set('include_groups', 'album,single');
+  firstUrl.searchParams.set('limit', '50');
+
+  let nextUrl = firstUrl.toString();
   const allItems = [];
 
   while (nextUrl) {
@@ -104,7 +147,7 @@ async function main() {
 
   const output = {
     generated_at: new Date().toISOString(),
-    artist_id: artistId,
+    artist_id: normalizedArtistId,
     items
   };
 
