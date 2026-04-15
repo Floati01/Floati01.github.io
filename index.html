@@ -3,265 +3,31 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Artist Bridge Explorer</title>
+    <title>My Website</title>
     <style>
-        :root {
-            --bg: #f8f6f1;
-            --card: #fffdf9;
-            --line: #d8d2c6;
-            --ink: #1d1b18;
-            --muted: #5f584d;
-            --accent: #157347;
-            --accent-soft: #dff3e9;
-            --danger: #8f2d19;
-        }
-
-        * {
-            box-sizing: border-box;
-        }
-
         body {
-            margin: 0;
-            min-height: 100vh;
-            font-family: "Trebuchet MS", "Gill Sans", "Segoe UI", sans-serif;
-            color: var(--ink);
-            background:
-                radial-gradient(circle at 15% 10%, #fff4d8 0, transparent 30%),
-                radial-gradient(circle at 85% 0%, #d9f6e7 0, transparent 40%),
-                var(--bg);
-            padding: 20px;
-        }
-
-        .app {
-            max-width: 1120px;
+            font-family: Arial, sans-serif;
+            max-width: 800px;
             margin: 0 auto;
-            display: grid;
-            gap: 16px;
-        }
-
-        .card {
-            background: var(--card);
-            border: 1px solid var(--line);
-            border-radius: 14px;
-            padding: 14px;
-            box-shadow: 0 4px 10px rgba(29, 27, 24, 0.06);
-        }
-
-        h1, h2, h3 {
-            margin: 0 0 10px 0;
-            line-height: 1.2;
+            padding: 20px;
+            line-height: 1.6;
+            color: #333;
         }
 
         h1 {
-            font-size: 1.65rem;
-            letter-spacing: 0.02em;
+            color: #222;
         }
 
-        .muted {
-            color: var(--muted);
-            margin: 0;
-        }
-
-        .grid {
-            display: grid;
-            gap: 12px;
-            grid-template-columns: repeat(12, 1fr);
-        }
-
-        .span-12 { grid-column: span 12; }
-        .span-6 { grid-column: span 6; }
-
-        @media (max-width: 860px) {
-            .span-6 {
-                grid-column: span 12;
-            }
-        }
-
-        label {
-            font-weight: 700;
-            display: block;
-            margin-bottom: 6px;
-        }
-
-        input[type="text"] {
-            width: 100%;
-            border: 1px solid var(--line);
-            border-radius: 10px;
-            padding: 10px;
-            background: #fff;
-            color: var(--ink);
-            font-size: 0.98rem;
-        }
-
-        .row {
-            display: flex;
-            gap: 10px;
-            align-items: center;
-            flex-wrap: wrap;
-        }
-
-        button {
-            border: 1px solid #0f5e39;
-            background: var(--accent);
-            color: #fff;
-            border-radius: 10px;
-            padding: 9px 13px;
-            font-weight: 700;
-            cursor: pointer;
-        }
-
-        button.secondary {
-            border-color: var(--line);
-            background: #fff;
-            color: var(--ink);
-        }
-
-        button:hover {
-            filter: brightness(1.05);
-        }
-
-        .status {
-            margin-top: 10px;
-            font-weight: 700;
-        }
-
-        .status.error {
-            color: var(--danger);
-        }
-
-        .status.ok {
-            color: var(--accent);
-        }
-
-        .pill {
-            display: inline-block;
-            border: 1px solid var(--line);
-            border-radius: 999px;
-            padding: 4px 10px;
-            margin: 2px 4px 2px 0;
-            background: #fff;
-            font-size: 0.88rem;
-        }
-
-        .path {
-            line-height: 1.8;
-        }
-
-        .list {
-            list-style: none;
-            margin: 0;
-            padding: 0;
-            display: grid;
-            gap: 8px;
-        }
-
-        .list li {
-            border: 1px solid var(--line);
-            border-radius: 10px;
-            padding: 8px;
-            background: #fff;
-        }
-
-        .artist-choice {
-            width: 100%;
-            text-align: left;
-            display: block;
-            border-radius: 10px;
-            border: 1px solid var(--line);
-            background: #fff;
-            padding: 8px;
-            margin-bottom: 6px;
-            color: var(--ink);
-            cursor: pointer;
-        }
-
-        .artist-choice small {
-            display: block;
-            color: var(--muted);
-            margin-top: 2px;
-        }
-
-        .track-title {
-            font-weight: 700;
-            margin-right: 6px;
-        }
-
-        .feature-btn {
-            border: 1px solid #9ecab2;
-            background: var(--accent-soft);
-            color: #093721;
-            border-radius: 999px;
-            padding: 2px 8px;
-            margin: 2px 6px 2px 0;
-            cursor: pointer;
-            font-size: 0.85rem;
-        }
-
-        .empty {
-            color: var(--muted);
-            font-style: italic;
-            margin: 0;
+        a {
+            color: #0066cc;
         }
     </style>
 </head>
 <body>
-    <main class="app">
-        <section class="card">
-            <h1>Artist Bridge Explorer</h1>
-            <p class="muted">Start from one artist, follow featured artists through tracks, and reach a target artist.</p>
-        </section>
-
-        <section class="card grid">
-            <div class="span-12">
-                <p class="muted">Live data is loaded through your Cloudflare Worker proxy. Configure the worker URL in main.js.</p>
-            </div>
-            <div class="span-6">
-                <label for="start-artist-query">Start artist</label>
-                <div class="row">
-                    <input id="start-artist-query" type="text" placeholder="Search start artist by name" autocomplete="off">
-                    <button id="search-start-btn" type="button">Search</button>
-                </div>
-                <div id="start-search-results" aria-live="polite"></div>
-            </div>
-            <div class="span-6">
-                <label for="end-artist-query">End artist</label>
-                <div class="row">
-                    <input id="end-artist-query" type="text" placeholder="Search end artist by name" autocomplete="off">
-                    <button id="search-end-btn" type="button">Search</button>
-                </div>
-                <div id="end-search-results" aria-live="polite"></div>
-            </div>
-            <div class="span-12 row">
-                <button id="start-journey-btn" type="button">Start Journey</button>
-                <button id="reset-btn" class="secondary" type="button">Reset</button>
-            </div>
-            <div class="span-12">
-                <p id="status" class="status" aria-live="polite"></p>
-            </div>
-        </section>
-
-        <section class="card grid">
-            <div class="span-12">
-                <h2>Journey</h2>
-                <div id="selection-summary" class="path"></div>
-                <p id="journey-state" class="status" aria-live="polite"></p>
-                <div id="path" class="path"></div>
-            </div>
-        </section>
-
-        <section class="card grid">
-            <div class="span-6">
-                <h2>Featured Artists Across Discography</h2>
-                <p id="current-artist-label" class="muted">Select start and end artists, then click Start Journey.</p>
-                <ul id="albums-list" class="list"></ul>
-            </div>
-            <div class="span-6">
-                <h2>Scan Summary</h2>
-                <p id="album-label" class="muted">Summary</p>
-                <ul id="tracks-list" class="list"></ul>
-            </div>
-        </section>
-    </main>
-    <script src="main.js"></script>
+    <h1>Welcome</h1>
+    <p>This is a simple website with some text. LOL</p>
+    
+    <h2>About</h2>
+    <p>Add your content here. This is a plain HTML page with no features or dependencies.</p>
 </body>
 </html>
