@@ -1,9 +1,9 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Portfolio</title>
+    <title>Posters - Portfolio</title>
     <style>
         * {
             margin: 0;
@@ -63,11 +63,7 @@
             padding: 0 20px;
         }
 
-        .section {
-            margin-bottom: 60px;
-        }
-
-        .section h2 {
+        h1 {
             font-size: 24px;
             margin-bottom: 30px;
             text-transform: uppercase;
@@ -103,17 +99,6 @@
             font-size: 14px;
         }
 
-        .placeholder {
-            width: 100%;
-            height: 300px;
-            background: #e0e0e0;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: #999;
-            font-size: 14px;
-        }
-
         @media (max-width: 768px) {
             .header-content {
                 flex-direction: column;
@@ -130,52 +115,6 @@
                 grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
             }
         }
-
-        .category-grid {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 30px;
-            max-width: 1200px;
-            margin: 0 auto;
-        }
-
-        .category-tile {
-            position: relative;
-            overflow: hidden;
-            border-radius: 8px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-            cursor: pointer;
-            transition: transform 0.3s, box-shadow 0.3s;
-            text-decoration: none;
-            display: block;
-            height: 400px;
-        }
-
-        .category-tile:hover {
-            transform: scale(1.05);
-            box-shadow: 0 8px 20px rgba(0,0,0,0.25);
-        }
-
-        .category-tile img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
-
-        .category-tile-label {
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            background: linear-gradient(to top, rgba(0,0,0,0.7), transparent);
-            color: white;
-            padding: 30px 20px 20px;
-            font-size: 24px;
-            font-weight: bold;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-        }
-    </style>
     </style>
 </head>
 <body>
@@ -183,32 +122,42 @@
         <div class="header-content">
             <div class="logo">PORTFOLIO</div>
             <nav>
-                <a href="#artwork">Artwork</a>
-                <a href="#posters">Posters</a>
-                <a href="#headers">Headers</a>
-                <a href="#animation">Animation</a>
+                <a href="index.html">Home</a>
+                <a href="artwork.html">Artwork</a>
+                <a href="posters.html">Posters</a>
+                <a href="headers.html">Headers</a>
+                <a href="animation.html">Animation</a>
             </nav>
         </div>
     </header>
 
     <main>
-        <div class="category-grid">
-            <a href="artwork.html" class="category-tile">
-                <img src="images/artwork-cover.jpg" alt="Artwork">
-                <div class="category-tile-label">Artwork</div>
-            </a>
-            <a href="posters.html" class="category-tile">
-                <img src="images/poster-cover.jpg" alt="Posters">
-                <div class="category-tile-label">Posters</div>
-            </a>
-            <a href="headers.html" class="category-tile">
-                <img src="images/header-cover.jpg" alt="Headers">
-                <div class="category-tile-label">Headers</div>
-            </a>
-            <a href="animation.html" class="category-tile">
-                <img src="images/animation-cover.jpg" alt="Animation">
-                <div class="category-tile-label">Animation</div>
-            </a>
+        <h1>Posters</h1>
+        <div class="gallery">
+            <div class="gallery-item">
+                <img src="images/poster-1.jpg" alt="Poster 1">
+                <p>Title or description</p>
+            </div>
+            <div class="gallery-item">
+                <img src="images/poster-2.jpg" alt="Poster 2">
+                <p>Title or description</p>
+            </div>
+            <div class="gallery-item">
+                <img src="images/poster-3.jpg" alt="Poster 3">
+                <p>Title or description</p>
+            </div>
+            <div class="gallery-item">
+                <img src="images/poster-4.jpg" alt="Poster 4">
+                <p>Title or description</p>
+            </div>
+            <div class="gallery-item">
+                <img src="images/poster-5.jpg" alt="Poster 5">
+                <p>Title or description</p>
+            </div>
+            <div class="gallery-item">
+                <img src="images/poster-6.jpg" alt="Poster 6">
+                <p>Title or description</p>
+            </div>
         </div>
     </main>
 </body>
