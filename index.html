@@ -81,6 +81,15 @@
             .gallery {
                 grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
             }
+
+            .tile-svg text {
+                font-size: 62px;
+                letter-spacing: 1px;
+            }
+
+            .tile-svg-animation text {
+                font-size: 52px;
+            }
         }
 
         .category-grid {
@@ -136,7 +145,7 @@
     <main>
         <div class="category-grid">
             <a href="artwork.html" class="category-tile">
-                <svg class="tile-svg" viewBox="0 0 1000 700" preserveAspectRatio="xMidYMid slice" aria-label="Artwork">
+                <svg class="tile-svg tile-svg-artwork" viewBox="0 0 1000 700" preserveAspectRatio="xMidYMid slice" aria-label="Artwork">
                     <defs>
                         <mask id="mask-artwork" maskUnits="userSpaceOnUse" x="0" y="0" width="1000" height="700">
                             <rect width="1000" height="700" fill="white" />
@@ -147,7 +156,7 @@
                 </svg>
             </a>
             <a href="posters.html" class="category-tile">
-                <svg class="tile-svg" viewBox="0 0 1000 700" preserveAspectRatio="xMidYMid slice" aria-label="Posters">
+                <svg class="tile-svg tile-svg-posters" viewBox="0 0 1000 700" preserveAspectRatio="xMidYMid slice" aria-label="Posters">
                     <defs>
                         <mask id="mask-posters" maskUnits="userSpaceOnUse" x="0" y="0" width="1000" height="700">
                             <rect width="1000" height="700" fill="white" />
@@ -158,7 +167,7 @@
                 </svg>
             </a>
             <a href="headers.html" class="category-tile">
-                <svg class="tile-svg" viewBox="0 0 1000 700" preserveAspectRatio="xMidYMid slice" aria-label="Headers">
+                <svg class="tile-svg tile-svg-headers" viewBox="0 0 1000 700" preserveAspectRatio="xMidYMid slice" aria-label="Headers">
                     <defs>
                         <mask id="mask-headers" maskUnits="userSpaceOnUse" x="0" y="0" width="1000" height="700">
                             <rect width="1000" height="700" fill="white" />
@@ -169,7 +178,7 @@
                 </svg>
             </a>
             <a href="animation.html" class="category-tile">
-                <svg class="tile-svg" viewBox="0 0 1000 700" preserveAspectRatio="xMidYMid slice" aria-label="Animation">
+                <svg class="tile-svg tile-svg-animation" viewBox="0 0 1000 700" preserveAspectRatio="xMidYMid slice" aria-label="Animation">
                     <defs>
                         <mask id="mask-animation" maskUnits="userSpaceOnUse" x="0" y="0" width="1000" height="700">
                             <rect width="1000" height="700" fill="white" />
