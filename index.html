@@ -15,15 +15,15 @@
 
         body {
             font-family: Arial, sans-serif;
-            background-color: #000;
+            background-color: transparent;
             color: #333;
         }
 
         main {
             max-width: 1200px;
-            margin: 40px auto;
+            margin: 160px auto 40px;
             padding: 0 20px;
-            background-color: #000;
+            background-color: transparent;
         }
 
         .section {
@@ -86,8 +86,8 @@
         .category-grid {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
-            gap: 30px;
-            max-width: 1200px;
+            gap: 25px;
+            max-width: 980px;
             margin: 0 auto;
         }
 
@@ -97,40 +97,36 @@
             border-radius: 0;
             box-shadow: 0 4px 12px rgba(0,0,0,0.15);
             cursor: pointer;
-            transition: transform 0.3s, box-shadow 0.3s;
+            transition: transform 0.18s ease, box-shadow 0.3s;
             text-decoration: none;
             display: block;
-            height: 400px;
+            height: 320px;
+            z-index: 1;
+            --move-x: 0px;
+            --move-y: 0px;
         }
 
         .category-tile:hover {
+            transform: translate(var(--move-x), var(--move-y)) scale(1.09);
             box-shadow: 0 8px 20px rgba(0,0,0,0.25);
+            z-index: 2;
         }
 
-        .category-tile img {
+        .tile-svg {
+            position: absolute;
+            inset: 0;
             width: 100%;
             height: 100%;
-            object-fit: cover;
+        }
+
+        .tile-svg-image {
             filter: grayscale(100%);
-            transition: filter 0.3s;
+            transition: filter 0.3s, transform 0.18s ease;
+            will-change: transform;
         }
 
-        .category-tile:hover img {
+        .category-tile:hover .tile-svg-image {
             filter: grayscale(0%);
-        }
-
-        .category-tile-label {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            color: white;
-            padding: 0;
-            font-size: 24px;
-            font-weight: bold;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            text-shadow: 0 2px 8px rgba(0, 0, 0, 0.85);
         }
     </style>
 </head>
@@ -140,22 +136,78 @@
     <main>
         <div class="category-grid">
             <a href="artwork.html" class="category-tile">
-                <img src="images/artwork/cover.jpg" alt="Artwork">
-                <div class="category-tile-label">Artwork</div>
+                <svg class="tile-svg" viewBox="0 0 1000 700" preserveAspectRatio="xMidYMid slice" aria-label="Artwork">
+                    <defs>
+                        <mask id="mask-artwork" maskUnits="userSpaceOnUse" x="0" y="0" width="1000" height="700">
+                            <rect width="1000" height="700" fill="white" />
+                            <text x="500" y="350" fill="black" text-anchor="middle" dominant-baseline="middle" font-family="Arial, sans-serif" font-size="90" font-weight="700" letter-spacing="3">ARTWORK</text>
+                        </mask>
+                    </defs>
+                    <image class="tile-svg-image" href="images/artwork/cover.jpg" width="1000" height="700" preserveAspectRatio="xMidYMid slice" mask="url(#mask-artwork)"/>
+                </svg>
             </a>
             <a href="posters.html" class="category-tile">
-                <img src="images/posters/cover.jpg" alt="Posters">
-                <div class="category-tile-label">Posters</div>
+                <svg class="tile-svg" viewBox="0 0 1000 700" preserveAspectRatio="xMidYMid slice" aria-label="Posters">
+                    <defs>
+                        <mask id="mask-posters" maskUnits="userSpaceOnUse" x="0" y="0" width="1000" height="700">
+                            <rect width="1000" height="700" fill="white" />
+                            <text x="500" y="350" fill="black" text-anchor="middle" dominant-baseline="middle" font-family="Arial, sans-serif" font-size="90" font-weight="700" letter-spacing="3">POSTERS</text>
+                        </mask>
+                    </defs>
+                    <image class="tile-svg-image" href="images/posters/cover.jpg" width="1000" height="700" preserveAspectRatio="xMidYMid slice" mask="url(#mask-posters)"/>
+                </svg>
             </a>
             <a href="headers.html" class="category-tile">
-                <img src="images/headers/cover.jpg" alt="Headers">
-                <div class="category-tile-label">Headers</div>
+                <svg class="tile-svg" viewBox="0 0 1000 700" preserveAspectRatio="xMidYMid slice" aria-label="Headers">
+                    <defs>
+                        <mask id="mask-headers" maskUnits="userSpaceOnUse" x="0" y="0" width="1000" height="700">
+                            <rect width="1000" height="700" fill="white" />
+                            <text x="500" y="350" fill="black" text-anchor="middle" dominant-baseline="middle" font-family="Arial, sans-serif" font-size="90" font-weight="700" letter-spacing="3">HEADERS</text>
+                        </mask>
+                    </defs>
+                    <image class="tile-svg-image" href="images/headers/cover.jpg" width="1000" height="700" preserveAspectRatio="xMidYMid slice" mask="url(#mask-headers)"/>
+                </svg>
             </a>
             <a href="animation.html" class="category-tile">
-                <img src="images/animation/cover.jpg" alt="Animation">
-                <div class="category-tile-label">Animation</div>
+                <svg class="tile-svg" viewBox="0 0 1000 700" preserveAspectRatio="xMidYMid slice" aria-label="Animation">
+                    <defs>
+                        <mask id="mask-animation" maskUnits="userSpaceOnUse" x="0" y="0" width="1000" height="700">
+                            <rect width="1000" height="700" fill="white" />
+                            <text x="500" y="350" fill="black" text-anchor="middle" dominant-baseline="middle" font-family="Arial, sans-serif" font-size="90" font-weight="700" letter-spacing="3">ANIMATION</text>
+                        </mask>
+                    </defs>
+                    <image class="tile-svg-image" href="images/animation/cover.jpg" width="1000" height="700" preserveAspectRatio="xMidYMid slice" mask="url(#mask-animation)"/>
+                </svg>
             </a>
         </div>
     </main>
+
+    <script>
+        (function () {
+            const tiles = document.querySelectorAll('.category-tile');
+
+            tiles.forEach((tile) => {
+                tile.addEventListener('mouseenter', () => {
+                    tiles.forEach((otherTile) => {
+                        otherTile.style.zIndex = '1';
+                    });
+                    tile.style.zIndex = '2';
+                });
+
+                tile.addEventListener('mousemove', (event) => {
+                    const rect = tile.getBoundingClientRect();
+                    const offsetX = (event.clientX - rect.left) / rect.width - 0.5;
+                    const offsetY = (event.clientY - rect.top) / rect.height - 0.5;
+                    tile.style.setProperty('--move-x', `${offsetX * 24}px`);
+                    tile.style.setProperty('--move-y', `${offsetY * 24}px`);
+                });
+
+                tile.addEventListener('mouseleave', () => {
+                    tile.style.setProperty('--move-x', '0px');
+                    tile.style.setProperty('--move-y', '0px');
+                });
+            });
+        })();
+    </script>
 </body>
 </html>

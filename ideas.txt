@@ -10,3 +10,29 @@ Go back with floating arrow or home button?
 mobile version:
 
 dropdown menu top right with header info? also gradient stuff there
+
+ALTERNATIVE:
+
+make the gradient thing come in from the left side:
+subpages listed on the left:
+
+artwork
+posters
+animations
+headers
+
+above should be clickable text with cover images clipped onto the text
+
+right side has "floati" up top, stuff listed:
+Prints
+Instagram
+Twitter
+Behance
+email
+
+alt 1:
+when you click a subpage, the gradient thing does a cool 
+transition to come from up top? and a go back button on the left?
+alt 2:
+when you click a subpage, stuff on the right gets replaced with content,
+go back button 
