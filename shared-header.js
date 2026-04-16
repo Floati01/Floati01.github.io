@@ -22,10 +22,10 @@
         '        <div class="logo">FLOATI</div>',
         '        <div class="header-right">',
         '            <a href="index.html">Work</a>',
-        '            <a href="contact.html">Contact</a>',
         '            <a href="https://www.inprnt.com/gallery/floati/" target="_blank" rel="noopener noreferrer">Prints</a>',
         '            <a href="https://www.instagram.com/flxti01/" target="_blank" rel="noopener noreferrer">Instagram</a>',
         '            <a href="https://x.com/flxti" target="_blank" rel="noopener noreferrer">Twitter</a>',
+        '            <a href="mailto:isakswiech@gmail.com">isakswiech@gmail.com</a>',
         '        </div>',
         '    </div>',
         '</header>'
