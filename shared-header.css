@@ -56,6 +56,8 @@ header {
     letter-spacing: 0.08em;
     padding: 8px 12px;
     cursor: pointer;
+    appearance: none;
+    -webkit-appearance: none;
 }
 
 .header-right {
@@ -80,20 +82,23 @@ header {
     color: #999;
 }
 
-@media (max-width: 768px) {
+@media (max-width: 1024px) {
     .header-content {
         gap: 10px;
         align-items: center;
-        padding: 18px 16px;
+        padding: 18px 90px 18px 16px;
     }
 
     .logo {
-        margin-right: auto;
+        margin-right: 0;
     }
 
     .menu-toggle {
-        display: inline-flex;
-        margin-left: auto;
+        display: block;
+        position: absolute;
+        top: 18px;
+        right: 16px;
+        z-index: 1200;
     }
 
     .header-right {
