@@ -4,6 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Headers - Portfolio</title>
+    <link rel="stylesheet" href="shared-header.css">
+    <script defer src="shared-header.js"></script>
     <style>
         * {
             margin: 0;
@@ -15,70 +17,6 @@
             font-family: Arial, sans-serif;
             background-color: #000;
             color: #333;
-        }
-
-        header {
-            background: #000;
-            padding: 20px;
-            border-bottom: 1px solid #333;
-            position: sticky;
-            top: 0;
-            z-index: 1000;
-        }
-
-        .header-content {
-            max-width: 1400px;
-            margin: 0 auto;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 20px;
-        }
-
-        .header-left {
-            display: flex;
-            gap: 30px;
-            flex: 1;
-        }
-
-        .header-left a {
-            color: #fff;
-            text-decoration: none;
-            font-weight: 500;
-            text-transform: uppercase;
-            font-size: 12px;
-            transition: color 0.3s;
-        }
-
-        .header-left a:hover {
-            color: #999;
-        }
-
-        .logo {
-            font-size: 20px;
-            font-weight: bold;
-            letter-spacing: 4px;
-            color: #fff;
-            flex: 1;
-            text-align: center;
-        }
-
-        .header-right {
-            display: flex;
-            gap: 20px;
-            flex: 1;
-            justify-content: flex-end;
-        }
-
-        .header-right a {
-            color: #fff;
-            text-decoration: none;
-            font-size: 12px;
-            transition: color 0.3s;
-        }
-
-        .header-right a:hover {
-            color: #999;
         }
 
         main {
@@ -151,17 +89,6 @@
         }
 
         @media (max-width: 768px) {
-            .header-content {
-                flex-direction: column;
-                gap: 15px;
-                text-align: center;
-            }
-
-            nav {
-                flex-direction: column;
-                gap: 10px;
-            }
-
             .gallery {
                 grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
             }
@@ -169,20 +96,7 @@
     </style>
 </head>
 <body>
-    <header>
-        <div class="header-content">
-            <div class="header-left">
-                <a href="#work">Work</a>
-                <a href="#contact">Contact</a>
-                <a href="#prints">Prints</a>
-            </div>
-            <div class="logo">FLOATI</div>
-            <div class="header-right">
-                <a href="#">Instagram</a>
-                <a href="#">Twitter</a>
-            </div>
-        </div>
-    </header>
+    <div id="site-header"></div>
 
     <main>
         <h1>Headers</h1>

@@ -1,0 +1,12 @@
+background animated "liquid" grayscale gradient, make text elements adapt, inverted color of
+the background animation
+
+header on all pages with logo and all social media and email adress
+
+homepage:
+floating clickables "my work": in middle: artwork, posters, animation, headers
+Go back with floating arrow or home button?
+
+mobile version:
+
+dropdown menu top right with header info? also gradient stuff there
