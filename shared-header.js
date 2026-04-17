@@ -19,7 +19,7 @@
     headerHost.innerHTML = [
         '<header>',
         '    <div class="header-content">',
-        '        <div class="logo">FLOATI</div>',
+        '        <a href="index.html" class="logo">FLOATI</a>',
         '        <button class="menu-toggle" type="button" aria-expanded="false" aria-controls="header-menu">Menu</button>',
         '        <div class="header-right" id="header-menu">',
         '            <a href="index.html">Work</a>',

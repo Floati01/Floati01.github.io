@@ -7,6 +7,13 @@
     <link rel="stylesheet" href="shared-header.css">
     <script defer src="shared-header.js"></script>
     <style>
+        :root { /* CSS variables for cover labels */
+            --label-font-family: 'copperplate gothic bold', sans-serif;
+            --label-font-size: 90px;
+            --label-font-weight: 700;
+            --label-letter-spacing: 3;
+        }
+
         * {
             margin: 0;
             padding: 0;
@@ -77,18 +84,18 @@
             font-size: 14px;
         }
 
-        @media (max-width: 768px) {
+        @media (max-width: 768px) { /* For tablets and smaller screens */
+            :root {
+                --label-font-size: 62px;
+                --label-letter-spacing: 1;
+            }
+
             .gallery {
                 grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
             }
 
-            .tile-svg text {
-                font-size: 62px;
-                letter-spacing: 1px;
-            }
-
-            .tile-svg-animation text {
-                font-size: 52px;
+            .tile-svg-animation {
+                --label-font-size: 52px;
             }
         }
 
@@ -137,6 +144,13 @@
         .category-tile:hover .tile-svg-image {
             filter: grayscale(0%);
         }
+
+        .tile-svg text {
+            font-family: var(--label-font-family);
+            font-size: var(--label-font-size);
+            font-weight: var(--label-font-weight);
+            letter-spacing: var(--label-letter-spacing);
+        }
     </style>
 </head>
 <body>
@@ -149,7 +163,7 @@
                     <defs>
                         <mask id="mask-artwork" maskUnits="userSpaceOnUse" x="0" y="0" width="1000" height="700">
                             <rect width="1000" height="700" fill="white" />
-                            <text x="500" y="350" fill="black" text-anchor="middle" dominant-baseline="middle" font-family="Arial, sans-serif" font-size="90" font-weight="700" letter-spacing="3">ARTWORK</text>
+                            <text x="500" y="350" fill="black" text-anchor="middle" dominant-baseline="middle">ARTWORK</text>
                         </mask>
                     </defs>
                     <image class="tile-svg-image" href="images/artwork/cover.jpg" width="1000" height="700" preserveAspectRatio="xMidYMid slice" mask="url(#mask-artwork)"/>
@@ -160,7 +174,7 @@
                     <defs>
                         <mask id="mask-posters" maskUnits="userSpaceOnUse" x="0" y="0" width="1000" height="700">
                             <rect width="1000" height="700" fill="white" />
-                            <text x="500" y="350" fill="black" text-anchor="middle" dominant-baseline="middle" font-family="Arial, sans-serif" font-size="90" font-weight="700" letter-spacing="3">POSTERS</text>
+                            <text x="500" y="350" fill="black" text-anchor="middle" dominant-baseline="middle">POSTERS</text>
                         </mask>
                     </defs>
                     <image class="tile-svg-image" href="images/posters/cover.jpg" width="1000" height="700" preserveAspectRatio="xMidYMid slice" mask="url(#mask-posters)"/>
@@ -171,7 +185,7 @@
                     <defs>
                         <mask id="mask-headers" maskUnits="userSpaceOnUse" x="0" y="0" width="1000" height="700">
                             <rect width="1000" height="700" fill="white" />
-                            <text x="500" y="350" fill="black" text-anchor="middle" dominant-baseline="middle" font-family="Arial, sans-serif" font-size="90" font-weight="700" letter-spacing="3">HEADERS</text>
+                            <text x="500" y="350" fill="black" text-anchor="middle" dominant-baseline="middle">HEADERS</text>
                         </mask>
                     </defs>
                     <image class="tile-svg-image" href="images/headers/Cover.jpg" width="1000" height="700" preserveAspectRatio="xMidYMid slice" mask="url(#mask-headers)"/>
@@ -182,7 +196,7 @@
                     <defs>
                         <mask id="mask-animation" maskUnits="userSpaceOnUse" x="0" y="0" width="1000" height="700">
                             <rect width="1000" height="700" fill="white" />
-                            <text x="500" y="350" fill="black" text-anchor="middle" dominant-baseline="middle" font-family="Arial, sans-serif" font-size="90" font-weight="700" letter-spacing="3">ANIMATION</text>
+                            <text x="500" y="350" fill="black" text-anchor="middle" dominant-baseline="middle">ANIMATION</text>
                         </mask>
                     </defs>
                     <image class="tile-svg-image" href="images/animation/Cover.jpg" width="1000" height="700" preserveAspectRatio="xMidYMid slice" mask="url(#mask-animation)"/>
