@@ -141,5 +141,13 @@ header {
 
     .header-right a {
         font-size: 14px;
+        outline: none;
+    }
+}
+
+/* Hide video controls play button on mobile */
+@media (max-width: 768px) {
+    .site-video-bg-video::-webkit-media-controls-play-button {
+        display: none;
     }
 }

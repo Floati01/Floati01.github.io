@@ -111,6 +111,16 @@
     box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
 }
 
+.lightbox video {
+    max-width: min(96vw, 1800px);
+    max-height: 92vh;
+    width: auto;
+    height: auto;
+    object-fit: contain;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+    margin: auto;
+}
+
 .lightbox-zoom-container {
     width: 100%;
     height: 100%;

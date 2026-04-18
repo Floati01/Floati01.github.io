@@ -7,6 +7,7 @@
 
     const lightbox = document.getElementById('lightbox') || createLightbox();
     const lightboxImage = lightbox.querySelector('#lightbox-image');
+    const lightboxVideo = lightbox.querySelector('#lightbox-video');
     const folder = gallery.dataset.galleryFolder;
     const mode = (gallery.dataset.galleryMode || 'numbered').toLowerCase();
     const prefix = gallery.dataset.galleryPrefix || 'Image';
@@ -29,10 +30,11 @@
         overlay.className = 'lightbox';
         overlay.id = 'lightbox';
         overlay.setAttribute('aria-hidden', 'true');
-        overlay.innerHTML = [
-            '<div id="lightbox-zoom-container" class="lightbox-zoom-container"><img id="lightbox-image" alt="Expanded image"></div>',
-            '<video id="lightbox-video" controls loop playsinline muted preload="metadata" style="display:none; max-width:min(96vw, 1800px); max-height:92vh; width:auto; height:auto; box-shadow:0 10px 40px rgba(0, 0, 0, 0.5);"></video>'
-        ].join('');
+        overlay.innerHTML = 
+            '<div id="lightbox-zoom-container" class="lightbox-zoom-container">' +
+            '<img id="lightbox-image" alt="Expanded image">' +
+            '<video id="lightbox-video" controls loop playsinline muted preload="metadata" style="display:none; max-width:min(96vw, 1800px); max-height:92vh; width:auto; height:auto; box-shadow:0 10px 40px rgba(0, 0, 0, 0.5);"></video>' +
+            '</div>';
         document.body.appendChild(overlay);
         return overlay;
     }
@@ -72,12 +74,24 @@
 
     function getPanBounds() {
         const zoomContainer = lightbox.querySelector('#lightbox-zoom-container');
-        if (!zoomContainer || !baseImageWidth || !baseImageHeight) {
+        if (!zoomContainer) {
             return { maxX: 0, maxY: 0 };
         }
 
-        const scaledWidth = baseImageWidth * lightboxZoomLevel;
-        const scaledHeight = baseImageHeight * lightboxZoomLevel;
+        let elementWidth = baseImageWidth;
+        let elementHeight = baseImageHeight;
+
+        if (lightboxImage.style.display !== 'none' && lightboxImage.clientWidth > 0) {
+            elementWidth = lightboxImage.clientWidth;
+            elementHeight = lightboxImage.clientHeight;
+        }
+
+        if (!elementWidth || !elementHeight) {
+            return { maxX: 0, maxY: 0 };
+        }
+
+        const scaledWidth = elementWidth * lightboxZoomLevel;
+        const scaledHeight = elementHeight * lightboxZoomLevel;
         const maxX = Math.max(0, (scaledWidth - zoomContainer.clientWidth) / (2 * lightboxZoomLevel));
         const maxY = Math.max(0, (scaledHeight - zoomContainer.clientHeight) / (2 * lightboxZoomLevel));
         return { maxX, maxY };
@@ -192,6 +206,8 @@
     function closeLightbox() {
         isPanning = false;
         resetZoom();
+        lightboxImage.style.display = 'block';
+        lightboxVideo.style.display = 'none';
         lightbox.classList.remove('open');
         lightbox.setAttribute('aria-hidden', 'true');
         document.body.style.overflow = '';
@@ -204,7 +220,6 @@
 
         const nextIndex = (index + thumbnails.length) % thumbnails.length;
         const thumbnail = thumbnails[nextIndex];
-        const lightboxVideo = lightbox.querySelector('#lightbox-video');
 
         if (!thumbnail) {
             return;
