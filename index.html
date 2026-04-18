@@ -12,6 +12,12 @@
             --label-font-size: 90px;
             --label-font-weight: 700;
             --label-letter-spacing: 3;
+            --cursor-move-range: 24;
+            --image-parallax-strength: 1;
+            --label-parallax-strength: 0.45;
+            --label-outline-color: #ffffff;
+            --label-outline-width: 1;
+            --cover-tint-opacity: 0.1;
         }
 
         * {
@@ -139,6 +145,7 @@
             filter: grayscale(100%);
             transition: filter 0.3s, transform 0.18s ease;
             will-change: transform;
+            transform: translate(var(--image-move-x, 0px), var(--image-move-y, 0px));
         }
 
         .category-tile:hover .tile-svg-image {
@@ -150,6 +157,30 @@
             font-size: var(--label-font-size);
             font-weight: var(--label-font-weight);
             letter-spacing: var(--label-letter-spacing);
+        }
+
+        .tile-svg-tint {
+            fill: #000;
+            opacity: var(--cover-tint-opacity);
+            pointer-events: none;
+        }
+
+        .mask-label-text {
+            transform: translate(var(--label-move-x, 0px), var(--label-move-y, 0px));
+            transform-box: fill-box;
+            transform-origin: center;
+        }
+
+        .label-outline {
+            fill: none;
+            stroke: var(--label-outline-color);
+            stroke-width: calc(var(--label-outline-width) * 1px);
+            vector-effect: non-scaling-stroke;
+            paint-order: stroke;
+            transform: translate(var(--label-move-x, 0px), var(--label-move-y, 0px));
+            transform-box: fill-box;
+            transform-origin: center;
+            pointer-events: none;
         }
     </style>
 </head>
@@ -163,10 +194,12 @@
                     <defs>
                         <mask id="mask-artwork" maskUnits="userSpaceOnUse" x="0" y="0" width="1000" height="700">
                             <rect width="1000" height="700" fill="white" />
-                            <text x="500" y="350" fill="black" text-anchor="middle" dominant-baseline="middle">ARTWORK</text>
+                            <text class="mask-label-text" x="500" y="350" fill="black" text-anchor="middle" dominant-baseline="middle">ARTWORK</text>
                         </mask>
                     </defs>
                     <image class="tile-svg-image" href="images/artwork/cover.jpg" width="1000" height="700" preserveAspectRatio="xMidYMid slice" mask="url(#mask-artwork)"/>
+                    <rect class="tile-svg-tint" x="0" y="0" width="1000" height="700" />
+                    <text class="label-outline" x="500" y="350" text-anchor="middle" dominant-baseline="middle">ARTWORK</text>
                 </svg>
             </a>
             <a href="posters.html" class="category-tile">
@@ -174,10 +207,12 @@
                     <defs>
                         <mask id="mask-posters" maskUnits="userSpaceOnUse" x="0" y="0" width="1000" height="700">
                             <rect width="1000" height="700" fill="white" />
-                            <text x="500" y="350" fill="black" text-anchor="middle" dominant-baseline="middle">POSTERS</text>
+                            <text class="mask-label-text" x="500" y="350" fill="black" text-anchor="middle" dominant-baseline="middle">POSTERS</text>
                         </mask>
                     </defs>
                     <image class="tile-svg-image" href="images/posters/cover.jpg" width="1000" height="700" preserveAspectRatio="xMidYMid slice" mask="url(#mask-posters)"/>
+                    <rect class="tile-svg-tint" x="0" y="0" width="1000" height="700" />
+                    <text class="label-outline" x="500" y="350" text-anchor="middle" dominant-baseline="middle">POSTERS</text>
                 </svg>
             </a>
             <a href="headers.html" class="category-tile">
@@ -185,10 +220,12 @@
                     <defs>
                         <mask id="mask-headers" maskUnits="userSpaceOnUse" x="0" y="0" width="1000" height="700">
                             <rect width="1000" height="700" fill="white" />
-                            <text x="500" y="350" fill="black" text-anchor="middle" dominant-baseline="middle">HEADERS</text>
+                            <text class="mask-label-text" x="500" y="350" fill="black" text-anchor="middle" dominant-baseline="middle">HEADERS</text>
                         </mask>
                     </defs>
                     <image class="tile-svg-image" href="images/headers/Cover.jpg" width="1000" height="700" preserveAspectRatio="xMidYMid slice" mask="url(#mask-headers)"/>
+                    <rect class="tile-svg-tint" x="0" y="0" width="1000" height="700" />
+                    <text class="label-outline" x="500" y="350" text-anchor="middle" dominant-baseline="middle">HEADERS</text>
                 </svg>
             </a>
             <a href="animation.html" class="category-tile">
@@ -196,10 +233,12 @@
                     <defs>
                         <mask id="mask-animation" maskUnits="userSpaceOnUse" x="0" y="0" width="1000" height="700">
                             <rect width="1000" height="700" fill="white" />
-                            <text x="500" y="350" fill="black" text-anchor="middle" dominant-baseline="middle">ANIMATION</text>
+                            <text class="mask-label-text" x="500" y="350" fill="black" text-anchor="middle" dominant-baseline="middle">ANIMATION</text>
                         </mask>
                     </defs>
                     <image class="tile-svg-image" href="images/animation/Cover.jpg" width="1000" height="700" preserveAspectRatio="xMidYMid slice" mask="url(#mask-animation)"/>
+                    <rect class="tile-svg-tint" x="0" y="0" width="1000" height="700" />
+                    <text class="label-outline" x="500" y="350" text-anchor="middle" dominant-baseline="middle">ANIMATION</text>
                 </svg>
             </a>
         </div>
@@ -208,6 +247,10 @@
     <script>
         (function () {
             const tiles = document.querySelectorAll('.category-tile');
+            const rootStyles = getComputedStyle(document.documentElement);
+            const cursorMoveRange = parseFloat(rootStyles.getPropertyValue('--cursor-move-range')) || 24;
+            const imageParallaxStrength = parseFloat(rootStyles.getPropertyValue('--image-parallax-strength')) || 0.45;
+            const labelParallaxStrength = parseFloat(rootStyles.getPropertyValue('--label-parallax-strength')) || 1.35;
 
             tiles.forEach((tile) => {
                 tile.addEventListener('mouseenter', () => {
@@ -221,13 +264,24 @@
                     const rect = tile.getBoundingClientRect();
                     const offsetX = (event.clientX - rect.left) / rect.width - 0.5;
                     const offsetY = (event.clientY - rect.top) / rect.height - 0.5;
-                    tile.style.setProperty('--move-x', `${offsetX * 24}px`);
-                    tile.style.setProperty('--move-y', `${offsetY * 24}px`);
+                    const moveX = offsetX * cursorMoveRange;
+                    const moveY = offsetY * cursorMoveRange;
+
+                    tile.style.setProperty('--move-x', `${moveX}px`);
+                    tile.style.setProperty('--move-y', `${moveY}px`);
+                    tile.style.setProperty('--image-move-x', `${moveX * imageParallaxStrength}px`);
+                    tile.style.setProperty('--image-move-y', `${moveY * imageParallaxStrength}px`);
+                    tile.style.setProperty('--label-move-x', `${moveX * labelParallaxStrength}px`);
+                    tile.style.setProperty('--label-move-y', `${moveY * labelParallaxStrength}px`);
                 });
 
                 tile.addEventListener('mouseleave', () => {
                     tile.style.setProperty('--move-x', '0px');
                     tile.style.setProperty('--move-y', '0px');
+                    tile.style.setProperty('--image-move-x', '0px');
+                    tile.style.setProperty('--image-move-y', '0px');
+                    tile.style.setProperty('--label-move-x', '0px');
+                    tile.style.setProperty('--label-move-y', '0px');
                 });
             });
         })();
