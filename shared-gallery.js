@@ -10,6 +10,8 @@
     const folder = gallery.dataset.galleryFolder;
     const mode = (gallery.dataset.galleryMode || 'numbered').toLowerCase();
     const prefix = gallery.dataset.galleryPrefix || 'Image';
+    const loadingStrategy = (gallery.dataset.galleryLoading || 'lazy').toLowerCase();
+    const eagerCount = Number.parseInt(gallery.dataset.galleryEagerCount || '0', 10);
     const extensions = (gallery.dataset.galleryExtensions || 'jpg')
         .split(',')
         .map((extension) => extension.trim().replace(/^\./, '').toLowerCase())
@@ -128,8 +130,13 @@
             mediaElement.controls = false;
         } else {
             mediaElement = document.createElement('img');
-            mediaElement.loading = 'lazy';
-            mediaElement.decoding = 'async';
+            const imageIndex = thumbnails.filter((thumb) => thumb.dataset.mediaType !== 'video').length + 1;
+            const shouldLoadEager = loadingStrategy === 'eager'
+                || (loadingStrategy === 'hybrid' && imageIndex <= Math.max(0, eagerCount));
+
+            mediaElement.loading = shouldLoadEager ? 'eager' : 'lazy';
+            mediaElement.decoding = shouldLoadEager ? 'sync' : 'async';
+            mediaElement.fetchPriority = shouldLoadEager && imageIndex <= 4 ? 'high' : 'auto';
             mediaElement.src = src;
         }
 
