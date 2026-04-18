@@ -1,0 +1,112 @@
+.gallery {
+    column-width: var(--gallery-column-width, 280px);
+    column-gap: var(--gallery-gap, 12px);
+}
+
+.gallery-item {
+    break-inside: avoid;
+    margin: 0 0 var(--gallery-gap, 12px);
+    overflow: hidden;
+    border-radius: 0;
+    box-shadow: var(--gallery-item-shadow, 0 2px 8px rgba(0, 0, 0, 0.1));
+    background: transparent;
+    transition: box-shadow 0.2s ease;
+    line-height: 0;
+}
+
+.gallery-item:hover {
+    box-shadow: var(--gallery-item-hover-shadow, 0 8px 20px rgba(0, 0, 0, 0.18));
+}
+
+.gallery-item:hover img {
+    transform: scale(var(--gallery-hover-scale, 1.015));
+}
+
+.gallery-item img {
+    display: block;
+    width: 100%;
+    height: auto;
+    cursor: zoom-in;
+    transform: scale(1);
+    transition: transform 0.2s ease;
+    backface-visibility: hidden;
+    will-change: transform;
+}
+
+.gallery-item video {
+    display: block;
+    width: 100%;
+    height: auto;
+    cursor: zoom-in;
+    background: transparent;
+}
+
+.gallery-item,
+.gallery-item img {
+    cursor: zoom-in;
+}
+
+.gallery-item,
+.gallery-item video {
+    cursor: zoom-in;
+}
+
+.gallery[data-gallery-layout="adaptive-grid"] {
+    display: grid;
+    grid-template-columns: repeat(var(--gallery-columns, 3), minmax(0, 1fr));
+    gap: var(--gallery-gap, 12px);
+    align-items: start;
+}
+
+.gallery[data-gallery-layout="adaptive-grid"] .gallery-item {
+    margin: 0;
+    background: transparent;
+}
+
+.gallery[data-gallery-layout="adaptive-grid"] .gallery-item > img,
+.gallery[data-gallery-layout="adaptive-grid"] .gallery-item > video {
+    width: 100%;
+    height: auto;
+    display: block;
+}
+
+.lightbox {
+    position: fixed;
+    inset: 0;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    padding: 24px;
+    background: var(--lightbox-background, rgba(0, 0, 0, 0.92));
+    z-index: 2000;
+    cursor: zoom-out;
+}
+
+.lightbox.open {
+    display: flex;
+}
+
+.lightbox img {
+    max-width: min(96vw, 1800px);
+    max-height: 92vh;
+    width: auto;
+    height: auto;
+    object-fit: contain;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+}
+
+@media (max-width: 768px) {
+    .gallery {
+        column-width: var(--gallery-column-width-mobile, 160px);
+        column-gap: var(--gallery-gap-mobile, 10px);
+    }
+
+    .gallery[data-gallery-layout="adaptive-grid"] {
+        grid-template-columns: repeat(var(--gallery-columns-mobile, 1), minmax(0, 1fr));
+        gap: var(--gallery-gap-mobile, 10px);
+    }
+
+    .gallery-item {
+        margin-bottom: var(--gallery-gap-mobile, 10px);
+    }
+}

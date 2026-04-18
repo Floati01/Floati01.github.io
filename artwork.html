@@ -6,6 +6,8 @@
     <title>Artwork - Portfolio</title>
     <link rel="stylesheet" href="shared-header.css">
     <script defer src="shared-header.js"></script>
+    <link rel="stylesheet" href="shared-gallery.css">
+    <script defer src="shared-gallery.js"></script>
     <style>
         * {
             margin: 0;
@@ -19,79 +21,17 @@
             color: #333;
         }
 
+        .gallery {
+            --gallery-gap: 8px;
+            --gallery-column-width: 320px;
+            --gallery-column-width-mobile: 160px;
+            --gallery-gap-mobile: 8px;
+        }
+
         main {
             max-width: 1200px;
             margin: 27px auto 40px;
             padding: 0 20px;
-        }
-
-        h1 {
-            font-size: 24px;
-            margin-bottom: 30px;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-        }
-
-        .gallery {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 20px;
-        }
-
-        .gallery-item {
-            background: white;
-            overflow: hidden;
-            border-radius: 0;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-            transition: transform 0.3s;
-        }
-
-        .gallery-item:hover {
-            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-        }
-
-        .gallery-item img {
-            width: 100%;
-            height: 300px;
-            object-fit: cover;
-            display: block;
-            cursor: pointer;
-        }
-
-        .gallery-item p {
-            padding: 15px;
-            font-size: 14px;
-        }
-
-        .lightbox {
-            position: fixed;
-            inset: 0;
-            display: none;
-            align-items: center;
-            justify-content: center;
-            padding: 24px;
-            background: rgba(0, 0, 0, 0.92);
-            z-index: 2000;
-            cursor: zoom-out;
-        }
-
-        .lightbox.open {
-            display: flex;
-        }
-
-        .lightbox img {
-            max-width: min(96vw, 1800px);
-            max-height: 92vh;
-            width: auto;
-            height: auto;
-            object-fit: contain;
-            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
-        }
-
-        @media (max-width: 768px) {
-            .gallery {
-                grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-            }
         }
     </style>
 </head>
@@ -99,91 +39,7 @@
     <div id="site-header"></div>
 
     <main>
-        <div class="gallery">
-            <div class="gallery-item">
-                <img src="images/artwork/1.jpg" alt="Artwork 1">
-                <p>Title or description</p>
-            </div>
-            <div class="gallery-item">
-                <img src="images/artwork/2.jpg" alt="Artwork 2">
-                <p>Title or description</p>
-            </div>
-            <div class="gallery-item">
-                <img src="images/artwork/3.jpg" alt="Artwork 3">
-                <p>Title or description</p>
-            </div>
-            <div class="gallery-item">
-                <img src="images/artwork/4.jpg" alt="Artwork 4">
-                <p>Title or description</p>
-            </div>
-            <div class="gallery-item">
-                <img src="images/artwork/5.jpg" alt="Artwork 5">
-                <p>Title or description</p>
-            </div>
-            <div class="gallery-item">
-                <img src="images/artwork/6.jpg" alt="Artwork 6">
-                <p>Title or description</p>
-            </div>
-        </div>
+        <div class="gallery" data-gallery-folder="images/artwork" data-gallery-prefix="Artwork" data-gallery-mode="numbered"></div>
     </main>
-
-    <div class="lightbox" id="lightbox" aria-hidden="true">
-        <img id="lightbox-image" alt="Expanded artwork">
-    </div>
-
-    <script>
-        (function () {
-            const lightbox = document.getElementById('lightbox');
-            const lightboxImage = document.getElementById('lightbox-image');
-            const thumbnails = Array.from(document.querySelectorAll('.gallery-item img'));
-            let currentIndex = -1;
-
-            function showImage(index) {
-                currentIndex = (index + thumbnails.length) % thumbnails.length;
-                const thumbnail = thumbnails[currentIndex];
-                lightboxImage.src = thumbnail.src;
-                lightboxImage.alt = thumbnail.alt;
-            }
-
-            function openLightbox(index) {
-                showImage(index);
-                lightbox.classList.add('open');
-                lightbox.setAttribute('aria-hidden', 'false');
-                document.body.style.overflow = 'hidden';
-            }
-
-            function closeLightbox() {
-                lightbox.classList.remove('open');
-                lightbox.setAttribute('aria-hidden', 'true');
-                document.body.style.overflow = '';
-            }
-
-            thumbnails.forEach((thumbnail, index) => {
-                thumbnail.addEventListener('click', () => {
-                    openLightbox(index);
-                });
-            });
-
-            lightbox.addEventListener('click', (event) => {
-                if (event.target === lightbox || event.target === lightboxImage) {
-                    closeLightbox();
-                }
-            });
-
-            document.addEventListener('keydown', (event) => {
-                if (!lightbox.classList.contains('open')) {
-                    return;
-                }
-
-                if (event.key === 'Escape') {
-                    closeLightbox();
-                } else if (event.key === 'ArrowRight') {
-                    showImage(currentIndex + 1);
-                } else if (event.key === 'ArrowLeft') {
-                    showImage(currentIndex - 1);
-                }
-            });
-        })();
-    </script>
 </body>
 </html>

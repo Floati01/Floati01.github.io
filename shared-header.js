@@ -4,16 +4,61 @@
         return;
     }
 
+    let backgroundVideo = document.querySelector('.site-video-bg-video');
+
     if (!document.querySelector('.site-video-bg')) {
-        const backgroundVideo = document.createElement('div');
-        backgroundVideo.className = 'site-video-bg';
-        backgroundVideo.setAttribute('aria-hidden', 'true');
-        backgroundVideo.innerHTML = [
-            '<video class="site-video-bg-video" autoplay muted loop playsinline preload="auto">',
+        const backgroundContainer = document.createElement('div');
+        backgroundContainer.className = 'site-video-bg';
+        backgroundContainer.setAttribute('aria-hidden', 'true');
+        backgroundContainer.innerHTML = [
+            '<video class="site-video-bg-video" autoplay muted loop playsinline webkit-playsinline preload="auto">',
             '    <source src="Banner.mp4" type="video/mp4">',
             '</video>'
         ].join('');
-        document.body.prepend(backgroundVideo);
+        document.body.prepend(backgroundContainer);
+        backgroundVideo = document.querySelector('.site-video-bg-video');
+    }
+
+    function tryPlayBackgroundVideo() {
+        if (!backgroundVideo) {
+            return;
+        }
+
+        backgroundVideo.muted = true;
+        backgroundVideo.defaultMuted = true;
+        backgroundVideo.playsInline = true;
+        backgroundVideo.setAttribute('muted', '');
+        backgroundVideo.setAttribute('playsinline', '');
+        backgroundVideo.setAttribute('webkit-playsinline', '');
+
+        const playPromise = backgroundVideo.play();
+
+        if (playPromise && typeof playPromise.catch === 'function') {
+            playPromise.catch(() => {
+                // Mobile browsers can block autoplay until a user gesture or
+                // a visibility change. Keep retrying on the next safe event.
+            });
+        }
+    }
+
+    if (backgroundVideo) {
+        ['loadedmetadata', 'canplay', 'canplaythrough', 'playing', 'suspend'].forEach((eventName) => {
+            backgroundVideo.addEventListener(eventName, tryPlayBackgroundVideo, { passive: true });
+        });
+
+        document.addEventListener('visibilitychange', () => {
+            if (!document.hidden) {
+                tryPlayBackgroundVideo();
+            }
+        });
+
+        window.addEventListener('pageshow', tryPlayBackgroundVideo, { passive: true });
+        window.addEventListener('focus', tryPlayBackgroundVideo, { passive: true });
+        window.addEventListener('touchstart', tryPlayBackgroundVideo, { passive: true, once: true });
+        window.addEventListener('pointerdown', tryPlayBackgroundVideo, { passive: true, once: true });
+        window.addEventListener('click', tryPlayBackgroundVideo, { passive: true, once: true });
+
+        tryPlayBackgroundVideo();
     }
 
     headerHost.innerHTML = [
