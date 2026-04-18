@@ -142,12 +142,20 @@ header {
     .header-right a {
         font-size: 14px;
         outline: none;
+        border: none;
+        box-shadow: none;
+    }
+
+    .header-right a:focus {
+        outline: none;
+        border: none;
+        box-shadow: none;
     }
 }
 
-/* Hide video controls play button on mobile */
+/* Hide entire video background on mobile */
 @media (max-width: 768px) {
-    .site-video-bg-video::-webkit-media-controls-play-button {
+    .site-video-bg {
         display: none;
     }
 }
