@@ -39,7 +39,7 @@ header {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 30px 40px 10px 0;
+    padding: 30px 40px 10px 30px;
     position: relative;
 }
 
