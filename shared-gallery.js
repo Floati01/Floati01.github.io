@@ -151,6 +151,10 @@
             mediaElement.loading = shouldLoadEager ? 'eager' : 'lazy';
             mediaElement.decoding = shouldLoadEager ? 'sync' : 'async';
             mediaElement.fetchPriority = shouldLoadEager && imageIndex <= 4 ? 'high' : 'auto';
+            if (options.width && options.height) {
+                mediaElement.width = options.width;
+                mediaElement.height = options.height;
+            }
             mediaElement.src = src;
         }
 
@@ -276,6 +280,8 @@
     }
 
     async function loadNumberedMedia() {
+        const mediaItems = [];
+
         for (let index = 1; index <= maxSequentialImages; index += 1) {
             let foundSrc = '';
             let foundType = 'image';
@@ -297,8 +303,30 @@
                 break;
             }
 
-            createGalleryItem(foundSrc, `${prefix} ${index}`.trim(), foundType);
+            let dimensions;
+            if (foundType === 'image') {
+                // eslint-disable-next-line no-await-in-loop
+                dimensions = await loadImageDimensions(foundSrc);
+            }
+
+            mediaItems.push({
+                src: foundSrc,
+                altText: `${prefix} ${index}`.trim(),
+                mediaType: foundType,
+                dimensions
+            });
         }
+
+        // Insert the complete set at once so CSS columns do not rebalance after
+        // each item is appended.
+        mediaItems.forEach((mediaItem) => {
+            createGalleryItem(
+                mediaItem.src,
+                mediaItem.altText,
+                mediaItem.mediaType,
+                mediaItem.dimensions
+            );
+        });
 
         if (gallery.dataset.galleryLayout === 'adaptive-grid') {
             const itemCount = thumbnails.length;
@@ -320,7 +348,11 @@
             // eslint-disable-next-line no-await-in-loop
             const dimensions = await loadImageDimensions(candidateSrc);
             const aspectRatio = `${dimensions.width} / ${dimensions.height}`;
-            createGalleryItem(candidateSrc, `${prefix} ${index}`.trim(), 'image', { aspectRatio });
+            createGalleryItem(candidateSrc, `${prefix} ${index}`.trim(), 'image', {
+                aspectRatio,
+                width: dimensions.width,
+                height: dimensions.height
+            });
         }
     }
 
