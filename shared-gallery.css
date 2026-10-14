@@ -33,6 +33,10 @@
     will-change: transform;
 }
 
+.gallery-item picture {
+    display: block;
+}
+
 .gallery-item video {
     display: block;
     width: 100%;

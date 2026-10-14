@@ -10,6 +10,7 @@
     const lightboxVideo = lightbox.querySelector('#lightbox-video');
     const folder = gallery.dataset.galleryFolder;
     const previewFolder = gallery.dataset.galleryPreviewFolder || '';
+    const mobilePreviewFolder = gallery.dataset.galleryMobilePreviewFolder || '';
     const mode = (gallery.dataset.galleryMode || 'numbered').toLowerCase();
     const prefix = gallery.dataset.galleryPrefix || 'Image';
     const loadingStrategy = (gallery.dataset.galleryLoading || 'lazy').toLowerCase();
@@ -133,6 +134,7 @@
         }
 
         let mediaElement;
+        let mediaContainer = item;
 
         if (mediaType === 'video') {
             mediaElement = document.createElement('video');
@@ -156,14 +158,24 @@
                 mediaElement.width = options.width;
                 mediaElement.height = options.height;
             }
-            mediaElement.src = options.previewSrc || src;
+            const previewSrc = options.previewSrc || src;
+            if (options.mobilePreviewSrc) {
+                const picture = document.createElement('picture');
+                const mobileSource = document.createElement('source');
+                mobileSource.media = '(max-width: 768px)';
+                mobileSource.srcset = options.mobilePreviewSrc;
+                picture.appendChild(mobileSource);
+                mediaContainer = picture;
+            }
+            mediaElement.src = previewSrc;
         }
 
         mediaElement.alt = altText;
         mediaElement.dataset.mediaType = mediaType;
         mediaElement.dataset.fullSrc = src;
 
-        item.appendChild(mediaElement);
+        mediaContainer.appendChild(mediaElement);
+        item.appendChild(mediaContainer);
         gallery.appendChild(item);
         thumbnails.push(mediaElement);
 
@@ -300,10 +312,14 @@
                         const dimensions = foundType === 'image'
                             ? await loadImageDimensions(candidatePreviewSrc)
                             : undefined;
+                        const mobilePreviewSrc = mobilePreviewFolder
+                            ? `${mobilePreviewFolder}/${index}.${extension}`
+                            : '';
 
                         return {
                             src: candidateSrc,
                             previewSrc: candidatePreviewSrc,
+                            mobilePreviewSrc,
                             altText: `${prefix} ${index}`.trim(),
                             mediaType: foundType,
                             dimensions
@@ -332,7 +348,11 @@
                 mediaItem.altText,
                 mediaItem.mediaType,
                 usePreviews
-                    ? { ...mediaItem.dimensions, previewSrc: mediaItem.previewSrc }
+                    ? {
+                        ...mediaItem.dimensions,
+                        previewSrc: mediaItem.previewSrc,
+                        mobilePreviewSrc: mediaItem.mobilePreviewSrc
+                    }
                     : mediaItem.dimensions
             );
         });
