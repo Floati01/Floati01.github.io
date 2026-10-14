@@ -3,6 +3,21 @@
     src: url(Strong.ttf) format("truetype");
 }
 
+:root {
+    --mobile-menu-font-family: "Strong", sans-serif;
+    --mobile-menu-font-size: 12px;
+    --mobile-menu-font-weight: 400;
+    --mobile-menu-letter-spacing: 0.08em;
+    --mobile-menu-text-color: #ffffff;
+    --mobile-menu-background: transparent;
+    --mobile-menu-border: 1px solid rgb(0, 0, 0);
+    --mobile-menu-padding: 6px 8px;
+    --mobile-menu-top: 22px;
+    --mobile-menu-right: 22px;
+    --mobile-logo-outline-width: 1px;
+    --mobile-logo-outline-color: black;
+}
+
 .site-video-bg { /* static background for video */
     position: fixed;
     inset: 0;
@@ -113,9 +128,22 @@ header {
     .menu-toggle {
         display: block;
         position: absolute;
-        top: 18px;
-        right: 16px;
+        top: var(--mobile-menu-top);
+        right: var(--mobile-menu-right);
         z-index: 1200;
+        border: var(--mobile-menu-border);
+        background: var(--mobile-menu-background);
+        color: var(--mobile-menu-text-color);
+        font-family: var(--mobile-menu-font-family);
+        font-size: var(--mobile-menu-font-size);
+        font-weight: var(--mobile-menu-font-weight);
+        letter-spacing: var(--mobile-menu-letter-spacing);
+        padding: var(--mobile-menu-padding);
+        text-transform: uppercase;
+    }
+
+    .header-left a {
+        -webkit-text-stroke: var(--mobile-logo-outline-width) var(--mobile-logo-outline-color);
     }
 
     .header-right {
@@ -157,7 +185,6 @@ header {
     }
 }
 
-/* Hide entire video background on mobile */
 @media (max-width: 768px) {
     html,
     body {
@@ -166,6 +193,11 @@ header {
     }
 
     .site-video-bg {
-        display: none;
+        display: block;
+    }
+
+    .site-video-bg-video {
+        object-fit: cover;
+        object-position: center center;
     }
 }
