@@ -9,6 +9,7 @@
     const lightboxImage = lightbox.querySelector('#lightbox-image');
     const lightboxVideo = lightbox.querySelector('#lightbox-video');
     const folder = gallery.dataset.galleryFolder;
+    const poster = gallery.dataset.galleryPoster || '';
     const previewFolder = gallery.dataset.galleryPreviewFolder || '';
     const mobilePreviewFolder = gallery.dataset.galleryMobilePreviewFolder || '';
     const isMobileViewport = window.matchMedia('(max-width: 768px)').matches;
@@ -140,6 +141,9 @@
         if (mediaType === 'video') {
             mediaElement = document.createElement('video');
             mediaElement.src = src;
+            if (poster) {
+                mediaElement.poster = poster;
+            }
             mediaElement.muted = true;
             mediaElement.loop = true;
             mediaElement.autoplay = true;
