@@ -193,7 +193,7 @@ header {
     }
 
     .site-video-bg {
-        display: block;
+        display: none;
     }
 
     .site-video-bg-video {
