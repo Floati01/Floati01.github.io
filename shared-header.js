@@ -4,9 +4,10 @@
         return;
     }
 
+    const isMobileViewport = window.matchMedia('(max-width: 768px)').matches;
     let backgroundVideo = document.querySelector('.site-video-bg-video');
 
-    if (!document.querySelector('.site-video-bg')) {
+    if (!isMobileViewport && !document.querySelector('.site-video-bg')) {
         const backgroundContainer = document.createElement('div');
         backgroundContainer.className = 'site-video-bg';
         backgroundContainer.setAttribute('aria-hidden', 'true');

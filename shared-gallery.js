@@ -11,6 +11,7 @@
     const folder = gallery.dataset.galleryFolder;
     const previewFolder = gallery.dataset.galleryPreviewFolder || '';
     const mobilePreviewFolder = gallery.dataset.galleryMobilePreviewFolder || '';
+    const isMobileViewport = window.matchMedia('(max-width: 768px)').matches;
     const mode = (gallery.dataset.galleryMode || 'numbered').toLowerCase();
     const prefix = gallery.dataset.galleryPrefix || 'Image';
     const loadingStrategy = (gallery.dataset.galleryLoading || 'lazy').toLowerCase();
@@ -306,11 +307,15 @@
                     const candidatePreviewSrc = previewFolder
                         ? `${previewFolder}/${index}.${extension}`
                         : candidateSrc;
+                    const candidateMobilePreviewSrc = mobilePreviewFolder
+                        ? `${mobilePreviewFolder}/${index}.${extension}`
+                        : candidatePreviewSrc;
+                    const metadataSrc = isMobileViewport ? candidateMobilePreviewSrc : candidatePreviewSrc;
 
-                    if (await mediaExists(candidatePreviewSrc)) {
+                    if (await mediaExists(metadataSrc)) {
                         const foundType = extension === 'mp4' ? 'video' : 'image';
                         const dimensions = foundType === 'image'
-                            ? await loadImageDimensions(candidatePreviewSrc)
+                            ? await loadImageDimensions(metadataSrc)
                             : undefined;
                         const mobilePreviewSrc = mobilePreviewFolder
                             ? `${mobilePreviewFolder}/${index}.${extension}`
