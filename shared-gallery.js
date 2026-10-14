@@ -175,8 +175,12 @@
         mediaElement.dataset.mediaType = mediaType;
         mediaElement.dataset.fullSrc = src;
 
-        mediaContainer.appendChild(mediaElement);
-        item.appendChild(mediaContainer);
+        if (mediaContainer === item) {
+            item.appendChild(mediaElement);
+        } else {
+            mediaContainer.appendChild(mediaElement);
+            item.appendChild(mediaContainer);
+        }
         gallery.appendChild(item);
         thumbnails.push(mediaElement);
 
