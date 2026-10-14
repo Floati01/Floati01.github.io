@@ -9,6 +9,7 @@
     const lightboxImage = lightbox.querySelector('#lightbox-image');
     const lightboxVideo = lightbox.querySelector('#lightbox-video');
     const folder = gallery.dataset.galleryFolder;
+    const previewFolder = gallery.dataset.galleryPreviewFolder || '';
     const mode = (gallery.dataset.galleryMode || 'numbered').toLowerCase();
     const prefix = gallery.dataset.galleryPrefix || 'Image';
     const loadingStrategy = (gallery.dataset.galleryLoading || 'lazy').toLowerCase();
@@ -155,11 +156,12 @@
                 mediaElement.width = options.width;
                 mediaElement.height = options.height;
             }
-            mediaElement.src = src;
+            mediaElement.src = options.previewSrc || src;
         }
 
         mediaElement.alt = altText;
         mediaElement.dataset.mediaType = mediaType;
+        mediaElement.dataset.fullSrc = src;
 
         item.appendChild(mediaElement);
         gallery.appendChild(item);
@@ -192,7 +194,7 @@
             lightboxVideo.load();
             lightboxVideo.style.display = 'none';
             lightboxImage.style.display = 'block';
-            lightboxImage.src = thumbnail.src;
+            lightboxImage.src = thumbnail.dataset.fullSrc || thumbnail.src;
             lightboxImage.alt = thumbnail.alt;
             lightboxImage.onload = () => {
                 cacheBaseImageSize();
@@ -244,7 +246,7 @@
             lightboxVideo.load();
             lightboxVideo.style.display = 'none';
             lightboxImage.style.display = 'block';
-            lightboxImage.src = thumbnail.src;
+            lightboxImage.src = thumbnail.dataset.fullSrc || thumbnail.src;
             lightboxImage.alt = thumbnail.alt;
         }
     }
@@ -281,41 +283,46 @@
 
     async function loadNumberedMedia() {
         const mediaItems = [];
+        const batchSize = 12;
 
-        for (let index = 1; index <= maxSequentialImages; index += 1) {
-            let foundSrc = '';
-            let foundType = 'image';
+        for (let batchStart = 1; batchStart <= maxSequentialImages; batchStart += batchSize) {
+            const batch = await Promise.all(Array.from({ length: Math.min(batchSize, maxSequentialImages - batchStart + 1) }, async (_, offset) => {
+                const index = batchStart + offset;
 
-            for (const extension of extensions) {
-                const candidateSrc = `${folder}/${index}.${extension}`;
+                for (const extension of extensions) {
+                    const candidateSrc = `${folder}/${index}.${extension}`;
+                    const candidatePreviewSrc = previewFolder
+                        ? `${previewFolder}/${index}.${extension}`
+                        : candidateSrc;
 
-                // Stop at the first matching numbered file, regardless of type.
-                // This lets animation folders use 1.mp4 while image folders keep 1.jpg.
-                // eslint-disable-next-line no-await-in-loop
-                if (await mediaExists(candidateSrc)) {
-                    foundSrc = candidateSrc;
-                    foundType = extension === 'mp4' ? 'video' : 'image';
-                    break;
+                    if (await mediaExists(candidatePreviewSrc)) {
+                        const foundType = extension === 'mp4' ? 'video' : 'image';
+                        const dimensions = foundType === 'image'
+                            ? await loadImageDimensions(candidatePreviewSrc)
+                            : undefined;
+
+                        return {
+                            src: candidateSrc,
+                            previewSrc: candidatePreviewSrc,
+                            altText: `${prefix} ${index}`.trim(),
+                            mediaType: foundType,
+                            dimensions
+                        };
+                    }
                 }
-            }
 
-            if (!foundSrc) {
+                return null;
+            }));
+
+            const firstMissingIndex = batch.findIndex((mediaItem) => !mediaItem);
+            mediaItems.push(...(firstMissingIndex === -1 ? batch : batch.slice(0, firstMissingIndex)));
+
+            if (firstMissingIndex !== -1) {
                 break;
             }
-
-            let dimensions;
-            if (foundType === 'image') {
-                // eslint-disable-next-line no-await-in-loop
-                dimensions = await loadImageDimensions(foundSrc);
-            }
-
-            mediaItems.push({
-                src: foundSrc,
-                altText: `${prefix} ${index}`.trim(),
-                mediaType: foundType,
-                dimensions
-            });
         }
+
+        const usePreviews = previewFolder && mediaItems.length >= 5;
 
         // Insert the complete set at once so CSS columns do not rebalance after
         // each item is appended.
@@ -324,7 +331,9 @@
                 mediaItem.src,
                 mediaItem.altText,
                 mediaItem.mediaType,
-                mediaItem.dimensions
+                usePreviews
+                    ? { ...mediaItem.dimensions, previewSrc: mediaItem.previewSrc }
+                    : mediaItem.dimensions
             );
         });
 
