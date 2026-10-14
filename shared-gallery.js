@@ -37,7 +37,7 @@
         overlay.innerHTML = 
             '<div id="lightbox-zoom-container" class="lightbox-zoom-container">' +
             '<img id="lightbox-image" alt="Expanded image">' +
-            '<video id="lightbox-video" controls loop playsinline muted preload="metadata" style="display:none; max-width:min(96vw, 1800px); max-height:92vh; width:auto; height:auto; box-shadow:0 10px 40px rgba(0, 0, 0, 0.5);"></video>' +
+            '<video id="lightbox-video" controls loop playsinline webkit-playsinline muted preload="auto" style="display:none; max-width:min(96vw, 1800px); max-height:92vh; width:auto; height:auto; box-shadow:0 10px 40px rgba(0, 0, 0, 0.5);"></video>' +
             '</div>';
         document.body.appendChild(overlay);
         return overlay;
@@ -145,10 +145,13 @@
                 mediaElement.poster = poster;
             }
             mediaElement.muted = true;
+            mediaElement.setAttribute('muted', '');
             mediaElement.loop = true;
             mediaElement.autoplay = true;
             mediaElement.playsInline = true;
-            mediaElement.preload = 'metadata';
+            mediaElement.setAttribute('playsinline', '');
+            mediaElement.setAttribute('webkit-playsinline', '');
+            mediaElement.preload = 'auto';
             mediaElement.controls = false;
         } else {
             mediaElement = document.createElement('img');
@@ -206,6 +209,7 @@
             lightboxImage.style.display = 'none';
             lightboxVideo.style.display = 'block';
             lightboxVideo.src = thumbnail.src;
+            lightboxVideo.load();
             lightboxVideo.loop = true;
             lightboxVideo.currentTime = 0;
             lightboxVideo.play().catch(() => {});
@@ -258,6 +262,7 @@
             lightboxImage.style.display = 'none';
             lightboxVideo.style.display = 'block';
             lightboxVideo.src = thumbnail.src;
+            lightboxVideo.load();
             lightboxVideo.loop = true;
             lightboxVideo.currentTime = 0;
             lightboxVideo.play().catch(() => {});
