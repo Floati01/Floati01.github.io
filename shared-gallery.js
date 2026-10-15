@@ -196,6 +196,19 @@
         });
     }
 
+    function playLightboxVideo(thumbnail) {
+        lightboxVideo.src = thumbnail.currentSrc || thumbnail.src;
+        lightboxVideo.poster = thumbnail.poster || '';
+        lightboxVideo.load();
+
+        const startPlayback = () => {
+            lightboxVideo.play().catch(() => {});
+        };
+
+        lightboxVideo.addEventListener('canplay', startPlayback, { once: true });
+        startPlayback();
+    }
+
     function openLightbox(index) {
         resetZoom();
         const thumbnail = thumbnails[index];
@@ -208,11 +221,8 @@
         if (thumbnail.dataset.mediaType === 'video') {
             lightboxImage.style.display = 'none';
             lightboxVideo.style.display = 'block';
-            lightboxVideo.src = thumbnail.src;
-            lightboxVideo.load();
             lightboxVideo.loop = true;
-            lightboxVideo.currentTime = 0;
-            lightboxVideo.play().catch(() => {});
+            playLightboxVideo(thumbnail);
         } else {
             lightboxVideo.pause();
             lightboxVideo.removeAttribute('src');
@@ -261,11 +271,8 @@
         if (thumbnail.dataset.mediaType === 'video') {
             lightboxImage.style.display = 'none';
             lightboxVideo.style.display = 'block';
-            lightboxVideo.src = thumbnail.src;
-            lightboxVideo.load();
             lightboxVideo.loop = true;
-            lightboxVideo.currentTime = 0;
-            lightboxVideo.play().catch(() => {});
+            playLightboxVideo(thumbnail);
         } else {
             lightboxVideo.pause();
             lightboxVideo.removeAttribute('src');
