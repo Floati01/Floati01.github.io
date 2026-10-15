@@ -451,10 +451,42 @@
 
         // Touch pinch zoom
         let lastTouchDistance = 0;
-        lightbox.addEventListener('touchmove', (event) => {
-            if (!lightbox.classList.contains('open') || lightboxImage.style.display === 'none' || event.touches.length !== 2) {
+        lightbox.addEventListener('touchstart', (event) => {
+            if (!lightbox.classList.contains('open') || lightboxImage.style.display === 'none') {
                 return;
             }
+
+            if (event.touches.length === 2) {
+                isPanning = false;
+                const dx = event.touches[0].clientX - event.touches[1].clientX;
+                const dy = event.touches[0].clientY - event.touches[1].clientY;
+                lastTouchDistance = Math.sqrt(dx * dx + dy * dy);
+            } else if (event.touches.length === 1 && lightboxZoomLevel > 1) {
+                isPanning = true;
+                panStartX = event.touches[0].clientX - lightboxPanX;
+                panStartY = event.touches[0].clientY - lightboxPanY;
+                updateZoomTransform();
+            }
+        }, { passive: false });
+
+        lightbox.addEventListener('touchmove', (event) => {
+            if (!lightbox.classList.contains('open') || lightboxImage.style.display === 'none') {
+                return;
+            }
+
+            if (event.touches.length === 1 && isPanning && lightboxZoomLevel > 1) {
+                event.preventDefault();
+                lightboxPanX = event.touches[0].clientX - panStartX;
+                lightboxPanY = event.touches[0].clientY - panStartY;
+                clampPanToBounds();
+                updateZoomTransform();
+                return;
+            }
+
+            if (event.touches.length !== 2) {
+                return;
+            }
+
             event.preventDefault();
             const dx = event.touches[0].clientX - event.touches[1].clientX;
             const dy = event.touches[0].clientY - event.touches[1].clientY;
@@ -466,8 +498,14 @@
             lastTouchDistance = touchDistance;
         }, { passive: false });
 
-        lightbox.addEventListener('touchend', () => {
-            lastTouchDistance = 0;
+        lightbox.addEventListener('touchend', (event) => {
+            if (event.touches.length < 2) {
+                lastTouchDistance = 0;
+            }
+            if (event.touches.length === 0) {
+                isPanning = false;
+                updateZoomTransform();
+            }
         });
 
         // Click-and-hold pan while zoomed in.
